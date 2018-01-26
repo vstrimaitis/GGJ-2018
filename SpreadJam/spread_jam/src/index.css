@@ -24,3 +24,7 @@ body {
 .positionable-item {
     position: absolute;
 }
+
+.cell-corner {
+    border-radius: 1000px;
+}
