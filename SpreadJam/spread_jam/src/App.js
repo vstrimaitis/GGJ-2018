@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Board from "./components/Board";
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <p>Hello, World!</p>
-      </div>
-    );
-  }
+    render() {
+        return (
+            <div className="Game">
+                <Board width={500} height={600} rows={12} cols={10} />
+            </div>
+        );
+    }
 }
 
 export default App;
