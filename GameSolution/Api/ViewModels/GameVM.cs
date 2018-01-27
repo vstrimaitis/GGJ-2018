@@ -22,7 +22,8 @@ namespace Web
                 var player = GameState.Players.Find(x => x.Id == PlayerState.Id);
                 GameState.Players.Remove(player);
                 Player.Colors.Add(player.Color);
-                //GameState.LastPlayerIndex; 
+
+                // should we add event aggregator message here? 
 
                 Dispose(); 
             }
@@ -42,6 +43,8 @@ namespace Web
             }
         }
 
+        private string _playerSubscription;
+        private string _playerMoveSubscription; 
         private Timer _timer1;
         public int TimeLeft { get; set; }
 
@@ -50,13 +53,13 @@ namespace Web
             _eventAggregator = eventAggregator;
             GameState = gameState;
 
-            _eventAggregator.Subscribe<Player>(x =>
+            _playerSubscription = _eventAggregator.Subscribe<Player>(x =>
             {                
                 Changed(nameof(GameState));
                 PushUpdates();
             });
 
-            _eventAggregator.Subscribe<PlayerMove>(x =>
+            _playerMoveSubscription = _eventAggregator.Subscribe<PlayerMove>(x =>
             {
                 
                 //GameState.Message = x.Message;
@@ -93,6 +96,8 @@ namespace Web
         public override void Dispose()
         {
             _timer1.Dispose();
+            _eventAggregator.Unsubscribe(_playerSubscription);
+            _eventAggregator.Unsubscribe(_playerMoveSubscription);
         }
     }
 }

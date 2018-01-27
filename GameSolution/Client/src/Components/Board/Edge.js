@@ -5,7 +5,7 @@ class Edge extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            color: props.color
+            color: "transparent"
         }
     }
     render() {
@@ -15,18 +15,18 @@ class Edge extends Component {
             backgroundColor: this.state.color,
             // border: "1px solid black"
         };
-
-        if(this.props.activeColor !== this.props.color) { // active
+        
+        if(this.props.isActive) {
             return (
                 <div
-                    onMouseOver={() => this.setState({color: this.props.activeColor})}
-                    onMouseOut={() => this.setState({color: this.props.color})}
+                    onMouseOver={() => this.setState({color: this.props.color})}
+                    onMouseOut={() => this.setState({color: "transparent"})}
                     onClick={() => this.props.onClick(this.props.start, this.props.end)}
                     className="positionable-item cell-edge"
                     style={st}
                 />
             );
-        } else { // inactive
+        } else {
             return (
                 <div
                     className="positionable-item cell-edge"
@@ -51,7 +51,7 @@ Edge.propTypes = {
         y: PT.number.isRequired
     }).isRequired,
     onClick: PT.func.isRequired,
-    activeColor: PT.string.isRequired
+    isActive: PT.bool.isRequired
 }
 
 export default Edge;
