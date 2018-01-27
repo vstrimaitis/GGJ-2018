@@ -14,10 +14,7 @@ function makeInitialData() {
     for(let i = 0; i < rows; i++) {
         for(let j = 0; j < cols; j++) {
             cells.push({
-                coords: {
-                    x: j,
-                    y: i
-                },
+                coords: { x: j, y: i },
                 influences: []
             });
         }
@@ -27,14 +24,8 @@ function makeInitialData() {
     for(let i = 0; i < rows+1; i++) {
         for(let j = 0; j < cols; j++) {
             edges.push({
-                start: {
-                    x: j,
-                    y: i
-                },
-                end: {
-                    x: j+1,
-                    y: i
-                },
+                start: { x: j, y: i },
+                end: { x: j+1, y: i },
                 owner: null
             });
         }
@@ -43,14 +34,8 @@ function makeInitialData() {
     for(let i = 0; i < rows; i++) {
         for(let j = 0; j < cols+1; j++) {
             edges.push({
-                start: {
-                    x: j,
-                    y: i
-                },
-                end: {
-                    x: j,
-                    y: i+1
-                },
+                start: { x: j, y: i },
+                end: { x: j, y: i+1 },
                 owner: null
             });
         }
@@ -62,6 +47,7 @@ function makeInitialData() {
         rows: cells.map(c => c.coords.y).reduce((a, b) => Math.max(a, b)) + 1,
         cols: cells.map(c => c.coords.x).reduce((a, b) => Math.max(a, b)) + 1
     };
+    data.playerId = 1234;
 }
 class Game extends React.Component {
     constructor(props) {
@@ -108,9 +94,7 @@ class Game extends React.Component {
                     <Board
                         width={500}
                         height={600}
-                        rows={data.board.rows}
-                        cols={data.board.cols}
-                        playerColor="red"
+                        data={data}
                     /> : ""}
             </div>
         );
