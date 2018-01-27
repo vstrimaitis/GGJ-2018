@@ -22,8 +22,13 @@ class Game extends React.Component {
 		};
 
 		window.addEventListener("beforeunload", (ev) => { 
+			ev.preventDefault(); 
 			this.vm.$dispatch({ PlayerExited: true });
 		});
+	}
+
+	componentWillUnmount = () => { 
+		this.vm.$destroy();
 	}
 
 	handleChange = (e) => {
