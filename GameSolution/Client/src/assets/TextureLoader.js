@@ -16,6 +16,7 @@ import redCrown from "../imgs/crown_red.png";
 import greenCrown from "../imgs/crown_green.png";
 import orangeCrown from "../imgs/crown_orange.png";
 import main from "../imgs/main.png";
+import button from "../imgs/button.png";
 
 
 export const getCell = (color, size) => {
@@ -52,3 +53,5 @@ export const getCrown = (color) => {
 } 
 
 export const getMainImage = () => main;
+
+export const getButton = () => button;

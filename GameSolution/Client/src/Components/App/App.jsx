@@ -6,12 +6,12 @@ import Start from '../StartScreen/Start';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.screen = {screen: "main"};
+    this.state = {screen: "main"};
   }
   render() {
     return (
       <div className="App">
-        {(this.props.screen === "main") ? <Start /> : <Game />}
+        {(this.state.screen === "main") ? <Start /> : <Game />}
       </div>
     );
   }

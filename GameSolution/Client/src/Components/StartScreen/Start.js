@@ -1,16 +1,30 @@
 import React, { Component } from 'react';
-import Main from "../../imgs/main.png";
+import { getMainImage, getButton } from '../../assets/TextureLoader';
 
 
 class Start extends Component {
-    constructor(props) {
-        super(props);
-        props.screen = "main";
-    }
     render() {
         return(
         <div>
-            <Main />
+            <img src={getMainImage()} style={{
+                position: "relative",
+                top: 0,
+                left: 0,
+                height: "95vh"
+                }}/>
+            <div>
+                <button style={{position: "absolute",
+                            top: "70vh", 
+                            height:"10vh",
+                            left: "46vw",
+                            background: "url("+getButton()+")",
+                            backgroundSize: "cover",
+                            width: "10vw",
+                            cursor: "pointer",
+                            border: "none"
+                        }}>
+                </button>
+            </div>
         </div>
         );
     }
