@@ -1,18 +1,32 @@
 using DotNetify;
 using System;
+using System.Diagnostics;
+using System.Threading;
 using Web.DTO;
 
 namespace Web
 {
     public class GameVM : BaseVM
     {
-        private readonly IEventAggregator _eventAggregator; 
-              
-        public GameState GameState { get; }
+        private readonly IEventAggregator _eventAggregator;
+        private static DateTime _gameStartedTime = DateTime.Now; 
+
+        public GameState GameState { get; set; }
 
         public PlayerState PlayerState { get; } = new PlayerState();
 
-        public PlayerMove PlayerMove {
+        public bool PlayerExited
+        {
+            set
+            {
+                GameState.PlayerIds.Remove(PlayerState.Id);
+                // change last player index! 
+                Dispose(); 
+            }
+        }
+
+        public PlayerMove PlayerMove
+        {
             set
             {
                 GameState.LastPlayerIndex++;
@@ -20,31 +34,49 @@ namespace Web
             }
         }
 
-        private static bool fakeUserPassed = false; 
-      
+        private Timer _timer1;
+        public int TimeLeft { get; set; }
+
         public GameVM(IEventAggregator eventAggregator, GameState gameState)
         {
             _eventAggregator = eventAggregator;
             GameState = gameState;
 
-            if (!fakeUserPassed)
-            {
-                fakeUserPassed = true;
-                return;
-            }
-                        
             PlayerState.Id = (new Random()).Next(1000000);
             Changed(nameof(PlayerState));
             GameState.PlayerIds.Add(PlayerState.Id);
             Changed(nameof(GameState));
             PushUpdates();
 
+            _timer1 = new Timer(state =>
+            {
+                TimeLeft = 20 - (DateTime.Now - _gameStartedTime).Seconds; 
+                Changed(nameof(TimeLeft));
+                if (TimeLeft <= 1)
+                {
+                    ResetGame();                    
+                }
+                PushUpdates();
+            }, null, 0, 1000);
+
             _eventAggregator.Subscribe<PlayerMove>(x =>
-            {                
+            {
                 GameState.SetMessage(x.Message);
                 Changed(nameof(GameState));
-                PushUpdates(); 
+                PushUpdates();
             });
         }
-    }   
+
+        private void ResetGame()
+        {           
+            GameState = new GameState();
+            Changed(nameof(GameState));
+            _gameStartedTime = DateTime.Now;
+        }
+
+        public override void Dispose()
+        {
+            _timer1.Dispose();
+        }
+    }
 }

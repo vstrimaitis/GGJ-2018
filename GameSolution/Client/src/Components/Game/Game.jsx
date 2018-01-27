@@ -10,18 +10,26 @@ class Game extends React.Component {
         this.vm = dotnetify.react.connect("GameVM", this);
 		this.state = {
 			GameState: { Message: "", NextPlayerId: -1 },
-			PlayerState: { Name: "", Id: "" } 
+			PlayerState: { Name: "", Id: "" }, 
+			TimeLeft: 60
 		};
+
+		window.addEventListener("beforeunload", (ev) => { 
+			this.vm.$dispatch({ PlayerExited: true });
+		});
 	}
 
 	handleChange = (e) => {
 		this.vm.$dispatch({ PlayerMove: { Message: e.target.value } });
 	}
 
+	
+
     render() {
 		let itIsYourTurn = this.state.GameState.NextPlayerId === this.state.PlayerState.Id;
         return (
 			<div className="App-intro">
+				<p>{this.state.TimeLeft}s left</p>
 				<p>Hello, {this.state.PlayerState.Id}</p>
 				<p>{itIsYourTurn ? "It is your turn!" : "Wait for your turn..."} {this.state.GameState.NextPlayerId}</p>
 				<p>Broadcasted state: {this.state.GameState.Message}</p>
