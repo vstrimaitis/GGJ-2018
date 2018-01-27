@@ -28,3 +28,12 @@ body {
 .cell-corner {
   border-radius: 1000px;
 }
+
+.cell-edge {
+    border-radius: 1000px;
+}
+
+.cell-body {
+    /* background-image: url(imgs/jelly_bg4.png); */
+    background-size: cover;
+}

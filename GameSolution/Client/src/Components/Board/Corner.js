@@ -12,7 +12,7 @@ class Corner extends Component {
             height: this.props.size,
             backgroundColor: this.props.color,
             opacity: this.state.opacity,
-            border: "1px solid black"
+            //border: "1px solid black"
         }
         return (
             <div

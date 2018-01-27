@@ -39,7 +39,7 @@ class Game extends React.Component {
 					onChange={this.handleChange} disabled={!itIsYourTurn}>
 				</input>
 
-				{false ? <Board width={500} height={600} rows={12} cols={10} /> : ""}
+				{true ? <Board width={500} height={600} rows={12} cols={10} playerColor="red" /> : ""}
             </div>
         );
     }
