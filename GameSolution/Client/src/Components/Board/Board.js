@@ -10,16 +10,30 @@ const initialCellColor = "rgb(255, 255, 255)";
 class Board extends Component {
     constructor(props) {
         super(props);
-        this.cellW = props.width / props.data.board.cols;
-        this.cellH = props.height / props.data.board.rows;
+
         this.cornerSize = 10;
         this.edgeWeight = 7;
         this.edgeLengthRatio = 0.9;
+        this.state = {cells: [], edges: [], player: null};
+        this.consumeProps.bind(this)(props, false);
+    }
+
+    consumeProps(props, useSetState) {
+        this.cellW = props.width / props.gridSize.cols;
+        this.cellH = props.height / props.gridSize.rows;
         
         const cells = props.data.cells.map(x => this.mapCell.bind(this)(x, props.data.players));
         const edges = props.data.edges.map(this.mapEdge.bind(this));
-        const player = props.data.players.filter(x => x.id === props.data.playerId)[0];
-        this.state = {cells, edges, player};
+        const player = props.data.players.filter(x => x.id === props.playerId)[0];
+        if(useSetState) {
+            this.setState({cells, edges, player});
+        } else {
+            this.state = {cells, edges, player};
+        }
+    }
+
+    componentWillReceiveProps(props) {
+        this.consumeProps.bind(this)(props, true);
     }
 
     mapCell(cell, players) {
@@ -150,17 +164,17 @@ class Board extends Component {
 Board.propTypes = {
     width: PT.number.isRequired,
     height: PT.number.isRequired,
+    playerId: PT.number.isRequired,
+    gridSize: PT.shape({
+        rows: PT.number.isRequired,
+        cols: PT.number.isRequired
+    }).isRequired,
     data: PT.shape({
-        playerId: PT.number.isRequired,
         players: PT.arrayOf(PT.shape({
             id: PT.number.isRequired,
             score: PT.number.isRequired,
             color: PT.string.isRequired
         })).isRequired,
-        board: PT.shape({
-            rows: PT.number.isRequired,
-            cols: PT.number.isRequired
-        }).isRequired,
         cells: PT.arrayOf(PT.shape({
             coords: PT.shape({
                 x: PT.number.isRequired,

@@ -57,7 +57,7 @@ namespace Web.DTO
             {
                 for (var j = 0; j < cols; j++)
                 {
-                    Cells.Add(new Cell(new Coordinate(i, j), new List<Influence>())); 
+                    Cells.Add(new Cell(new Coordinate(j, i), new List<Influence>())); 
                 }
             }
         }
@@ -67,8 +67,7 @@ namespace Web.DTO
             LastPlayerId = playerId; 
 
             //Update Edges 
-            Edges.RemoveAll(x => x.StartCoordinate.X == move.StartCoordinate.X && x.StartCoordinate.Y == move.StartCoordinate.Y
-                && x.EndCoordinate.X == move.EndCoordinate.X && x.EndCoordinate.Y == move.EndCoordinate.Y);
+            Edges.RemoveAll(x => x.StartCoordinate == move.StartCoordinate && x.EndCoordinate == move.EndCoordinate);
             Edges.Add(new Edge(new Coordinate(move.StartCoordinate.X, move.StartCoordinate.Y), new Coordinate(move.EndCoordinate.X, move.EndCoordinate.Y), playerId));
 
             //Update Cells 
