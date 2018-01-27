@@ -114,11 +114,11 @@ class Board extends Component {
         return (<Edge
             height={info.h}
             width={info.w}
-            color={info.color}
+            color={this.state.player.color}
             start={info.coords.start}
             end={info.coords.end}
             onClick={this.handleEdgeClick.bind(this)}
-            activeColor={this.props.isActive ? this.state.player.color : info.color}
+            isActive={this.props.isActive}
         />);
     }
 
