@@ -10,6 +10,7 @@ class Cell extends Component {
         }
         return (
             <div
+                onClick={() => console.log(this.props.influences)}
                 className="positionable-item cell-body"
                 style={st}
             />
@@ -20,7 +21,11 @@ class Cell extends Component {
 Cell.propTypes = {
     color: PT.string.isRequired,
     height: PT.number.isRequired,
-    width: PT.number.isRequired
+    width: PT.number.isRequired,
+    influences: PT.arrayOf(PT.shape({
+        amount: PT.number.isRequired,
+        playerId: PT.number.isRequired
+    })).isRequired
 }
 
 export default Cell;

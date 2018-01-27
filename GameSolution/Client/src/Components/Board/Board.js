@@ -81,7 +81,12 @@ class Board extends Component {
 
     cell(info) {
         return (
-            <Cell width={this.cellW} height={this.cellH} color={info.color} />
+            <Cell
+                width={this.cellW}
+                height={this.cellH}
+                color={info.color}
+                influences={info.influences}
+            />
         );
     }
     edge(info) {
@@ -158,7 +163,8 @@ Board.propTypes = {
                 y: PT.number.isRequired
             }).isRequired,
             influences: PT.arrayOf(PT.shape({
-                // ???
+                amount: PT.number.isRequired,
+                playerId: PT.number.isRequired
             })).isRequired
         })).isRequired,
         edges: PT.arrayOf(PT.shape({
