@@ -14,17 +14,18 @@ namespace Web.DTO
         public int NextPlayerId
         {
             get
-            {
+            {                
                 if (Players == null || Players.Count == 0)
                 {
                     return -1;
                 }
-                int nextIndex = LastPlayerIndex % Players.Count;
-                return Players[nextIndex].Id;
+                var lastPlayerIndex = Players.FindIndex(x => x.Id == LastPlayerId);
+                var nextPlayerIndex = lastPlayerIndex != Players.Count - 1 ? lastPlayerIndex + 1 : 0;
+                return Players[nextPlayerIndex].Id;
             }
         }
 
-        internal static int LastPlayerIndex { get; set; }
+        internal int LastPlayerId { get; set; }
         public GameState()
         {
             Players = new List<Player>();
@@ -62,13 +63,10 @@ namespace Web.DTO
             }
         }
 
-        static GameState()
-        {            
-            LastPlayerIndex = 0;
-        }
-
         internal void SetMove(PlayerMove move, int playerId)
         {
+            LastPlayerId = playerId; 
+
             //Update Edges 
             Edges.RemoveAll(x => x.StartCoordinate.Equals(move.StartCoordinate) && x.EndCoordinate.Equals(move.EndCoordinate));
             Edges.Add(new Edge(new Coordinate(move.StartCoordinate.X, move.StartCoordinate.Y), new Coordinate(move.EndCoordinate.X, move.EndCoordinate.Y), playerId));

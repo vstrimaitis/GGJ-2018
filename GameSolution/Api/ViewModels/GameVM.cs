@@ -19,8 +19,11 @@ namespace Web
         {
             set
             {
-                GameState.Players.RemoveAll(x => x.Id == PlayerState.Id);
-                // change last player index! 
+                var player = GameState.Players.Find(x => x.Id == PlayerState.Id);
+                GameState.Players.Remove(player);
+                Player.Colors.Add(player.Color);
+                //GameState.LastPlayerIndex; 
+
                 Dispose(); 
             }
         }
@@ -30,7 +33,6 @@ namespace Web
             set
             {
                 GameState.SetMove(value, PlayerState.Id);
-                GameState.LastPlayerIndex++;
                 _eventAggregator.Publish(value);
             }
         }
@@ -51,6 +53,7 @@ namespace Web
 
             _eventAggregator.Subscribe<PlayerMove>(x =>
             {
+                
                 GameState.Message = x.Message;
                 Changed(nameof(GameState));
                 PushUpdates();
