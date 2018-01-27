@@ -4,15 +4,8 @@ namespace Web.DTO
 {
     public class GameState
     {
-        public string Message
-        {
-            get { return _message; }
-            set
-            {
-                _message = value;
-                LastPlayerIndex++;
-            }
-        }
+        public string Message { get; internal set; }
+
         public static List<int> PlayerIds { get; set; }
         public int NextPlayerId
         {
@@ -26,14 +19,18 @@ namespace Web.DTO
                 return PlayerIds[nextIndex];
             }
         }
-
-        private string _message;
-        private static int LastPlayerIndex;
+              
+        internal static int LastPlayerIndex { get; set; }
 
         static GameState()
         {
             PlayerIds = new List<int>();
             LastPlayerIndex = 0;
+        }
+
+        internal void SetMessage(string message)
+        {
+            Message = message; 
         }
     }
 }

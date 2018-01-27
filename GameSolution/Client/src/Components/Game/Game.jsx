@@ -14,7 +14,7 @@ class Game extends React.Component {
 	}
 
 	handleChange = (e) => {
-		this.vm.$dispatch({ GameState: { Message: e.target.value } });
+		this.vm.$dispatch({ PlayerMove: { Message: e.target.value } });
 	}
 
     render() {

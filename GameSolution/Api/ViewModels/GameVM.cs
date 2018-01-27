@@ -7,24 +7,16 @@ namespace Web
     public class GameVM : BaseVM
     {
         private readonly IEventAggregator _eventAggregator; 
-
-        private GameState _gamestate;                 
-        public GameState GameState {
-            get {
-                
-                return _gamestate;
-            }
-            set {                
-                _eventAggregator.Publish(value);
-            }
-        }
+              
+        public GameState GameState { get; }
 
         public PlayerState PlayerState { get; } = new PlayerState();
 
         public PlayerMove PlayerMove {
             set
             {
-
+                GameState.LastPlayerIndex++;
+                _eventAggregator.Publish(value);
             }
         }
 
@@ -33,7 +25,7 @@ namespace Web
         public GameVM(IEventAggregator eventAggregator, GameState gameState)
         {
             _eventAggregator = eventAggregator;
-            _gamestate = gameState;
+            GameState = gameState;
 
             if (!fakeUserPassed)
             {
@@ -47,9 +39,9 @@ namespace Web
             Changed(nameof(GameState));
             PushUpdates();
 
-            _eventAggregator.Subscribe<GameState>(x =>
-            {
-                _gamestate = x;
+            _eventAggregator.Subscribe<PlayerMove>(x =>
+            {                
+                GameState.SetMessage(x.Message);
                 Changed(nameof(GameState));
                 PushUpdates(); 
             });
