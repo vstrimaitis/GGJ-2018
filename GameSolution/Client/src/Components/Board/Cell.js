@@ -5,7 +5,6 @@ class Cell extends Component {
     render() {
         const i = this.props.influence;
         const image = i ? getCell(i.color, i.amount) : getCell();
-        console.log(image);
         let st = {
             width: this.props.width,
             height: this.props.height,

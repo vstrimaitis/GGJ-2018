@@ -13,9 +13,9 @@ class Edge extends Component {
             width: this.props.width,
             height: this.props.height,
             backgroundColor: this.state.color,
-            border: "1px solid black"
+            // border: "1px solid black"
         };
-        
+
         if(this.props.activeColor !== this.props.color) { // active
             return (
                 <div

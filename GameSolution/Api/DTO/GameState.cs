@@ -6,6 +6,8 @@ namespace Web.DTO
 {
     public class GameState
     {
+        private static List<int> _influences = new List<int>() { 100, 50, 25 };
+
         public string Message { get; internal set; }
         public List<Edge> Edges { get; set; }
         public List<Cell> Cells { get; set; }
@@ -73,9 +75,17 @@ namespace Web.DTO
 
             //Update Cells 
             UpdateCells(move, playerId);
+            UpdateScore();
         }
 
-        private static List<int> _influences = new List<int>() { 100, 50, 25 };
+        private void UpdateScore()
+        {
+            var scores = Cells.GroupBy(x => x.Influence?.PlayerId)
+                              .Where(x => x.Key != null)
+                              .ToDictionary(x => x.Key, x => x.Count());
+            Players = Players.Select(x => new Player(x.Id, scores[x.Id], x.Color)).ToList();
+
+        }
 
         private void UpdateCells(PlayerMove move, int playerId)
         {

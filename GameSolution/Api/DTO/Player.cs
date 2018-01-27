@@ -17,6 +17,13 @@ namespace Web.DTO
             Colors.RemoveAt(colorIndex); 
         }
 
+        public Player(int id, int score, string color)
+        {
+            Id = id;
+            Score = score;
+            Color = color;
+        }
+
         public static List<string> Colors { get; set; }
 
         static Player()
