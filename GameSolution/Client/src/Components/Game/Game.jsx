@@ -70,6 +70,7 @@ class Game extends React.Component {
                         data={gs}
                         playerId= {this.state.PlayerState.Id}
                         onEdgeSelect={this.handleMove.bind(this)}
+                        isActive={itIsYourTurn}
                     /> : ""}
             </div>
         );

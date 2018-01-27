@@ -30,7 +30,6 @@ class Board extends Component {
         } else {
             this.state = {cells, edges, player};
         }
-        console.log(this.state);
     }
 
     componentWillReceiveProps(props) {
@@ -124,6 +123,7 @@ class Board extends Component {
             start={info.coords.start}
             end={info.coords.end}
             onClick={this.handleEdgeClick.bind(this)}
+            activeColor={this.props.isActive ? this.state.player.color : info.color}
         />);
     }
 
@@ -198,7 +198,8 @@ Board.propTypes = {
             }).isRequired,
             owner: PT.number
         })).isRequired
-    }).isRequired
+    }).isRequired,
+    isActive: PT.bool.isRequired
 }
 
 export default Board;
