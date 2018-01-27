@@ -4,9 +4,70 @@ import Board from '../Board/Board';
 
 dotnetify.hubServerUrl = "http://localhost:44264";
 
+const data = {};
+
+function makeInitialData() {
+    const rows = 12;
+    const cols = 10;
+    const players = [{id: 1234, score: 0, color: "red"}];
+    const cells = [];
+    for(let i = 0; i < rows; i++) {
+        for(let j = 0; j < cols; j++) {
+            cells.push({
+                coords: {
+                    x: j,
+                    y: i
+                },
+                influences: []
+            });
+        }
+    }
+    const edges = [];
+    // Horizontal edges
+    for(let i = 0; i < rows+1; i++) {
+        for(let j = 0; j < cols; j++) {
+            edges.push({
+                start: {
+                    x: j,
+                    y: i
+                },
+                end: {
+                    x: j+1,
+                    y: i
+                },
+                owner: null
+            });
+        }
+    }
+    // Vertical edges
+    for(let i = 0; i < rows; i++) {
+        for(let j = 0; j < cols+1; j++) {
+            edges.push({
+                start: {
+                    x: j,
+                    y: i
+                },
+                end: {
+                    x: j,
+                    y: i+1
+                },
+                owner: null
+            });
+        }
+    }
+    data.players = players;
+    data.cells = cells;
+    data.edges = edges;
+    data.board = {
+        rows: cells.map(c => c.coords.y).reduce((a, b) => Math.max(a, b)) + 1,
+        cols: cells.map(c => c.coords.x).reduce((a, b) => Math.max(a, b)) + 1
+    };
+}
 class Game extends React.Component {
     constructor(props) {
         super(props);
+        makeInitialData();
+        console.log(data);
         this.vm = dotnetify.react.connect("GameVM", this);
 		this.state = {
 			GameState: { Message: "", NextPlayerId: -1 },
@@ -31,7 +92,14 @@ class Game extends React.Component {
 					onChange={this.handleChange} disabled={!itIsYourTurn}>
 				</input>
 
-				{true ? <Board width={500} height={600} rows={12} cols={10} playerColor="red" /> : ""}
+				{true ?
+                    <Board
+                        width={500}
+                        height={600}
+                        rows={data.board.rows}
+                        cols={data.board.cols}
+                        playerColor="red"
+                    /> : ""}
             </div>
         );
     }
