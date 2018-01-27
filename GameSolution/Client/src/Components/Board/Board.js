@@ -6,7 +6,7 @@ import Edge from "./Edge";
 import Positionable from "./Positionable"
 
 const initialCornerColor = "rgb(255, 255, 255)";
-const initialEdgeColor = "rgba(255,255,255,0)";//"rgb(255, 214, 150)";
+const initialEdgeColor = "rgba(255,255,255,0.1)";//"rgb(255, 214, 150)";
 const initialCellColor = "rgb(255, 255, 255)";
 
 class Board extends Component {
@@ -21,10 +21,7 @@ class Board extends Component {
         for(let i = 0; i < props.rows; i++) {
             for(let j = 0; j < props.cols; j++) {
                 cells.push({
-                    coords: {
-                        x: j,
-                        y: i
-                    },
+                    coords: {x: j, y: i},
                     pixelCoords: {
                         x: j*this.cellW,
                         y: i*this.cellH,
@@ -55,19 +52,10 @@ class Board extends Component {
                 const delta = (1-this.edgeLengthRatio)*dx/2;
                 edges.push({
                     coords: {
-                        start: {
-                            x: j,
-                            y: i
-                        },
-                        end: {
-                            x: j+1,
-                            y: i
-                        }
+                        start: {x: j, y: i},
+                        end: {x: j+1, y: i}
                     },
-                    pixelCoords: {
-                        x: x1+delta,
-                        y: y,
-                    },
+                    pixelCoords: {x: x1+delta, y: y,},
                     w: dx-2*delta,
                     h: this.edgeWeight,
                     color: initialEdgeColor
@@ -84,19 +72,10 @@ class Board extends Component {
                 const delta = (1-this.edgeLengthRatio)*dy/2;
                 edges.push({
                     coords: {
-                        start: {
-                            x: j,
-                            y: i
-                        },
-                        end: {
-                            x: j,
-                            y: i+1
-                        }
+                        start: {x: j, y: i},
+                        end: {x: j, y: i+1}
                     },
-                    pixelCoords: {
-                        x: x,
-                        y: y1+delta,
-                    },
+                    pixelCoords: {x: x, y: y1+delta},
                     w: this.edgeWeight,
                     h: dy-2*delta,
                     color: initialEdgeColor,
@@ -115,39 +94,35 @@ class Board extends Component {
         this.state = {cells, corners, edges};
     }
 
-    buildCell(info) {
+    buildPositionable(elem, info) {
         return (
-            <Positionable key={info.coords.x+"_"+info.coords.y} x={info.pixelCoords.x} y={info.pixelCoords.y}>
-                <Cell width={this.cellW} height={this.cellH} color={info.color} />
+            <Positionable key={info.pixelCoords.x+"_"+info.pixelCoords.y} x={info.pixelCoords.x} y={info.pixelCoords.y}>
+                {elem(info)}
             </Positionable>
-        )
+        );
     }
 
-    buildCorner(coords) {
+    cell(info) {
         return (
-            <Positionable key={coords.x+"_"+coords.y} x={coords.x} y={coords.y}>
-                <Corner size={this.cornerSize} color={coords.color} />
-            </Positionable>
-        )
+            <Cell width={this.cellW} height={this.cellH} color={info.color} />
+        );
+    }
+    edge(info) {
+        return (<Edge
+            height={info.h}
+            width={info.w}
+            color={info.color}
+            selectedColor={this.props.playerColor}
+            start={info.coords.start}
+            end={info.coords.end}
+            onClick={this.handleEdgeClick.bind(this)}
+        />);
     }
 
-    buildEdge(info) {
+    corner(info) {
         return (
-            <Positionable
-                key={info.coords.start.x+"_"+info.coords.start.y+"_"+info.coords.end.x+"_"+info.coords.end.y}
-                x={info.pixelCoords.x}
-                y={info.pixelCoords.y}>
-                <Edge
-                    height={info.h}
-                    width={info.w}
-                    color={info.color}
-                    selectedColor={this.props.playerColor}
-                    start={info.coords.start}
-                    end={info.coords.end}
-                    onClick={this.handleEdgeClick.bind(this)}
-                />
-            </Positionable>
-        )
+            <Corner size={this.cornerSize} color={info.color} />
+        );
     }
 
     handleEdgeClick(start, end) {
@@ -186,9 +161,9 @@ class Board extends Component {
     render() {
         return (
             <div className="positionable-container" id="board" style={{width: this.props.width, height: this.props.height}}>
-                {this.state.cells.map(this.buildCell.bind(this))}
-                {/* {this.state.corners.map(this.buildCorner.bind(this))} */}
-                {this.state.edges.map(this.buildEdge.bind(this))}
+                {this.state.cells.map(x => this.buildPositionable(this.cell.bind(this), x))}
+                {/* {this.state.corners.map(x => this.buildPositionable(this.corner.bind(this), x))} */}
+                {this.state.edges.map(x => this.buildPositionable(this.edge.bind(this), x))}
             </div>
         )
     }
