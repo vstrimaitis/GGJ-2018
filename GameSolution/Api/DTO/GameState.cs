@@ -68,8 +68,7 @@ namespace Web.DTO
         internal void SetMove(PlayerMove move, int playerId)
         {
             //Update Edges 
-            Edges.RemoveAll(x => x.StartCoordinate.X == move.StartCoordinate.X && x.StartCoordinate.Y == move.StartCoordinate.Y
-                && x.EndCoordinate.X == move.EndCoordinate.X && x.EndCoordinate.Y == move.EndCoordinate.Y);
+            Edges.RemoveAll(x => x.StartCoordinate == move.StartCoordinate && x.EndCoordinate == move.EndCoordinate);
             Edges.Add(new Edge(new Coordinate(move.StartCoordinate.X, move.StartCoordinate.Y), new Coordinate(move.EndCoordinate.X, move.EndCoordinate.Y), playerId));
 
             //Update Cells 
