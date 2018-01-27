@@ -56,7 +56,10 @@ class Game extends React.Component {
         console.log(data);
         this.vm = dotnetify.react.connect("GameVM", this);
 		this.state = {
-			GameState: { Message: "", NextPlayerId: -1 },
+			GameState: { Message: "", NextPlayerId: -1, 
+				PlayerMove: { Message: "", StartCoordinate: {X: 0, Y: 0}, EndCoordinate: {X: 0, Y: 0}},
+				Edges: []
+			},
 			PlayerState: { Name: "", Id: "" }, 
 			TimeLeft: 60
 		};
@@ -67,7 +70,8 @@ class Game extends React.Component {
 	}
 
 	handleChange = (e) => {
-		this.vm.$dispatch({ PlayerMove: { Message: e.target.value } });
+		console.log(this.state.GameState.Edges);
+		this.vm.$dispatch({ PlayerMove: { Message: e.target.value, StartCoordinate: {X: 0, Y: 0}, EndCoordinate: {X: 1, Y: 0}} });
 	}
 
 	

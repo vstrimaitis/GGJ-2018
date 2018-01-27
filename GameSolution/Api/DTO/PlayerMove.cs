@@ -2,9 +2,9 @@
 {
     public class PlayerMove
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        
+        public Coordinate StartCoordinate { get; set; }
+        public Coordinate EndCoordinate { get; set; }
         public string Message { get; set; }
+
     }
 }
