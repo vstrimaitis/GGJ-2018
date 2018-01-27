@@ -20,7 +20,7 @@ class Game extends React.Component {
     render() {
         return (
 			<div className="App-intro">
-				<p>Hello, {this.state.PlayerState.Id}</p>
+				<p>Hehiojpollo, {this.state.PlayerState.Id}</p>
 				<p>Broadcasted state: {this.state.GameState.Message}</p>
 
 				<input type="text"
