@@ -1,5 +1,6 @@
 import React from 'react';
 import dotnetify from 'dotnetify';
+import Board from '../Board/Board';
 
 dotnetify.hubServerUrl = "http://localhost:44264";
 
@@ -29,6 +30,8 @@ class Game extends React.Component {
 					value={this.props.value}
 					onChange={this.handleChange} disabled={!itIsYourTurn}>
 				</input>
+
+				{false ? <Board width={500} height={600} rows={12} cols={10} /> : ""}
             </div>
         );
     }
