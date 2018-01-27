@@ -8,7 +8,7 @@ class Game extends React.Component {
         super(props);
         this.vm = dotnetify.react.connect("GameVM", this);
 		this.state = {
-			GameState: { Message: "" },
+			GameState: { Message: "", NextPlayerId: -1 },
 			PlayerState: { Name: "", Id: "" } 
 		};
 	}
@@ -18,14 +18,16 @@ class Game extends React.Component {
 	}
 
     render() {
+		let itIsYourTurn = this.state.GameState.NextPlayerId === this.state.PlayerState.Id;
         return (
 			<div className="App-intro">
 				<p>Hello, {this.state.PlayerState.Id}</p>
+				<p>{itIsYourTurn ? "It is your turn!" : "Wait for your turn..."} {this.state.GameState.NextPlayerId}</p>
 				<p>Broadcasted state: {this.state.GameState.Message}</p>
 
 				<input type="text"
 					value={this.props.value}
-					onChange={this.handleChange}>
+					onChange={this.handleChange} disabled={!itIsYourTurn}>
 				</input>
             </div>
         );

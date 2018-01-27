@@ -26,15 +26,25 @@ namespace Web
             {
 
             }
-        } 
+        }
+
+        private static bool fakeUserPassed = false; 
       
         public GameVM(IEventAggregator eventAggregator, GameState gameState)
         {
             _eventAggregator = eventAggregator;
             _gamestate = gameState;
 
+            if (!fakeUserPassed)
+            {
+                fakeUserPassed = true;
+                return;
+            }
+                        
             PlayerState.Id = (new Random()).Next(1000000);
             Changed(nameof(PlayerState));
+            GameState.PlayerIds.Add(PlayerState.Id);
+            Changed(nameof(GameState));
             PushUpdates();
 
             _eventAggregator.Subscribe<GameState>(x =>
