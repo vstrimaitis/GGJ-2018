@@ -10,7 +10,6 @@ class Cell extends Component {
         };
         return (
             <div
-                onClick={() => console.log(this.props.influence)}
                 className="positionable-item cell-body"
                 style={st}
             />

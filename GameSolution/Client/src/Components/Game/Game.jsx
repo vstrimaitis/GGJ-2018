@@ -48,7 +48,7 @@ class Game extends React.Component {
 
     render() {
         const gs = mapGameState(this.state.GameState);
-        console.log(gs);
+        console.log("Current state", gs);
         let itIsYourTurn = this.state.GameState.NextPlayerId === this.state.PlayerState.Id;
         return (
 			<div className="App-intro">

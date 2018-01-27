@@ -128,7 +128,6 @@ class Board extends Component {
         if(changedEdge.color !== initialEdgeColor) {
             return;
         }
-        console.log(start, end);
         this.props.onEdgeSelect(changedEdge.coords);
     }
 
