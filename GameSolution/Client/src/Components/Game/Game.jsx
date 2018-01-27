@@ -48,8 +48,10 @@ class Game extends React.Component {
 
     render() {
         const gs = mapGameState(this.state.GameState);
-        console.log(gs);
+        console.log("Current state", gs);
         let itIsYourTurn = this.state.GameState.NextPlayerId === this.state.PlayerState.Id;
+        const myPlayer = this.state.GameState.Players.filter(x => x.Id === this.state.PlayerState.Id)[0];
+        const myScore = myPlayer ? myPlayer.Score : 0;
         return (
 			<div className="App-intro">
 				<p>{this.state.TimeLeft}s left</p>
@@ -61,6 +63,7 @@ class Game extends React.Component {
 					value={this.props.value}
 					onChange={this.handleChange} disabled={!itIsYourTurn}>
 				</input>
+                <span>Your score: {myScore}</span>
 
 				{true ?
                     <Board
