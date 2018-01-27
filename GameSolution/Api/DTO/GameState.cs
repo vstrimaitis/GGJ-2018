@@ -4,7 +4,10 @@ namespace Web.DTO
 {
     public class GameState
     {
-        public string Message { get; internal set; }
+        public string Message { get; internal set; } 
+
+        public List<Edge> Edges { get; set; }
+        public List<Cell> Cells { get; set; }
 
         public static List<int> PlayerIds { get; set; }
         public int NextPlayerId
