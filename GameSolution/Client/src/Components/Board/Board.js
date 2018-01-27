@@ -16,18 +16,22 @@ class Board extends Component {
         this.edgeWeight = 7;
         this.edgeLengthRatio = 0.9;
         
-        const cells = props.data.cells.map(this.mapCell.bind(this));
+        const cells = props.data.cells.map(x => this.mapCell.bind(this)(x, props.data.players));
         const edges = props.data.edges.map(this.mapEdge.bind(this));
         const player = props.data.players.filter(x => x.id === props.data.playerId)[0];
         this.state = {cells, edges, player};
     }
 
-    mapCell(cell) {
+    mapCell(cell, players) {
         const newCell = {...cell};
         newCell.pixelCoords = {
             x: cell.coords.x*this.cellW,
             y: cell.coords.y*this.cellH,
         };
+        newCell.influences = newCell.influences.map(x => ({
+            amount: x.amount,
+            color: players.filter(y => y.id === x.playerId)[0].color
+        })).sort((a, b) => a-b);
         newCell.color = initialCellColor;
         return newCell;
     }
