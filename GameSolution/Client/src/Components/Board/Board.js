@@ -134,18 +134,9 @@ class Board extends Component {
             return;
         }
         console.log(start, end);
-        changedEdge.color = this.state.player.color;
-        const cells = this.state.cells.map(x => this.updateCell(x, edges));
-        this.setState({...this.state, edges, cells});
+        //changedEdge.color = this.state.player.color;
+        //this.setState({...this.state, edges});
         this.props.onEdgeSelect(changedEdge.coords);
-    }
-
-    updateCell(cell, edges) {
-        const boundingEdges = edges.filter(e => this.isEdgeBounding(e, cell));
-        const allSame = !!boundingEdges.reduce((a, b) => a.color === b.color ? a : {}).color;
-        if (!allSame) return cell;
-        if (boundingEdges[0].color === initialEdgeColor) return cell;
-        return {...cell, color: this.state.player.color};
     }
 
     isEdgeBounding(edge, cell) {
