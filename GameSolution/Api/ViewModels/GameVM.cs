@@ -9,7 +9,8 @@ namespace Web
     public class GameVM : BaseVM
     {
         private readonly IEventAggregator _eventAggregator;
-        private static DateTime _gameStartedTime = DateTime.Now; 
+        private static DateTime _gameStartedTime = DateTime.Now;
+        private static DateTime _playerGameStartedTime = DateTime.Now; 
 
         public GameState GameState { get; set; }
 
@@ -39,6 +40,7 @@ namespace Web
                 }
                 GameState.Message = value.Message;
                 GameState.SetMove(value, PlayerState.Id);
+                _playerGameStartedTime = DateTime.Now; 
                 _eventAggregator.Publish(value);
             }
         }
@@ -46,7 +48,8 @@ namespace Web
         private string _playerSubscription;
         private string _playerMoveSubscription; 
         private Timer _timer1;
-        public int TimeLeft { get; set; }
+        public int TimeLeft { get; private set; }
+        public int CurrentPlayerTimeLeft { get; private set; }
 
         public GameVM(IEventAggregator eventAggregator, GameState gameState)
         {
@@ -61,8 +64,6 @@ namespace Web
 
             _playerMoveSubscription = _eventAggregator.Subscribe<PlayerMove>(x =>
             {
-                
-                //GameState.Message = x.Message;
                 Changed(nameof(GameState));
                 PushUpdates();
             });
@@ -76,21 +77,34 @@ namespace Web
 
             _timer1 = new Timer(state =>
             {
-                TimeLeft = 20 - (DateTime.Now - _gameStartedTime).Seconds; 
-                Changed(nameof(TimeLeft));
+                TimeLeft = 60 - (DateTime.Now - _gameStartedTime).Seconds;
+                CurrentPlayerTimeLeft = 15 - (DateTime.Now - _playerGameStartedTime).Seconds;                 
+                if (CurrentPlayerTimeLeft <= 1 && GameState.NextPlayerId == PlayerState.Id)
+                {
+                    _playerGameStartedTime = DateTime.Now;
+                    CurrentPlayerTimeLeft = 15;
+                    GameState.LastPlayerId = PlayerState.Id;
+                    _eventAggregator.Publish<Player>(null);
+                }
                 if (TimeLeft <= 1)
                 {
-                    //ResetGame();                    
+                    ResetGame();                    
                 }
+                Changed(nameof(TimeLeft));
+                Changed(nameof(CurrentPlayerTimeLeft));
                 PushUpdates();
             }, null, 0, 1000);            
         }
 
         private void ResetGame()
-        {           
+        {
+            var players = GameState.Players; 
             GameState = new GameState();
-            Changed(nameof(GameState));
+            GameState.Players = players;
+            //GameState.LastPlayerId = GameState.Players.Count > 0 ? GameState.Players[0].Id : 0; 
             _gameStartedTime = DateTime.Now;
+            _playerGameStartedTime = DateTime.Now;
+            _eventAggregator.Publish<Player>(null);
         }
 
         public override void Dispose()
