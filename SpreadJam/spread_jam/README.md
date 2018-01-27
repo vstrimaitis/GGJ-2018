@@ -1,2 +1,0 @@
-# SpreadJam
-Best. Game. Ever.
