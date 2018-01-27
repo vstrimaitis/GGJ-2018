@@ -9,7 +9,7 @@ const data = {};
 function makeInitialData() {
     const rows = 12;
     const cols = 10;
-    const players = [{id: 1234, score: 0, color: "red"}];
+    const players = [{id: 1234, score: 0, color: "red"}, {id: 3412, score: 0, color: "yellow"}];
     const cells = [];
     for(let i = 0; i < rows; i++) {
         for(let j = 0; j < cols; j++) {
@@ -19,6 +19,8 @@ function makeInitialData() {
             });
         }
     }
+    cells[0].influences[0] = {amount: 100, playerId: 1234};
+    cells[0].influences[1] = {amount: 50, playerId: 3412};
     const edges = [];
     // Horizontal edges
     for(let i = 0; i < rows+1; i++) {
