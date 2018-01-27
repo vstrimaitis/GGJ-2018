@@ -1,13 +1,15 @@
 export const mapGameState = (gs) => {
     return {
-        players: [{id: 1234, score: 0, color: "red"}], // ????
+        players: gs.Players.map(mapPlayer),
         cells: gs.Cells.map(mapCell),
         edges: gs.Edges.map(mapEdge)
     };
 };
 
 const mapPlayer = p => ({
-    // ???
+    id: p.Id,
+    score: p.Score,
+    color: p.Color
 });
 
 const mapCoordinate = c => ({x: c.X, y: c.Y});

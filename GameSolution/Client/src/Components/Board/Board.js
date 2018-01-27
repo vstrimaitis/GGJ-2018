@@ -15,21 +15,25 @@ class Board extends Component {
         this.edgeWeight = 7;
         this.edgeLengthRatio = 0.9;
         this.state = {cells: [], edges: [], player: null};
-        this.consumeProps.bind(this)(props);
+        this.consumeProps.bind(this)(props, false);
     }
 
-    consumeProps(props) {
+    consumeProps(props, useSetState) {
         this.cellW = props.width / props.gridSize.cols;
         this.cellH = props.height / props.gridSize.rows;
         
         const cells = props.data.cells.map(x => this.mapCell.bind(this)(x, props.data.players));
         const edges = props.data.edges.map(this.mapEdge.bind(this));
         const player = props.data.players.filter(x => x.id === props.playerId)[0];
-        this.setState({cells, edges, player});
+        if(useSetState) {
+            this.setState({cells, edges, player});
+        } else {
+            this.state = {cells, edges, player};
+        }
     }
 
     componentWillReceiveProps(props) {
-        this.consumeProps.bind(this)(props);
+        this.consumeProps.bind(this)(props, true);
     }
 
     mapCell(cell, players) {
