@@ -1,6 +1,8 @@
 import React from 'react';
 import dotnetify from 'dotnetify';
 import Board from '../Board/Board';
+import {mapGameState} from "../../utils/GameStateMapper";
+import {getBoardDimensions} from "../../utils/Logic";
 
 dotnetify.hubServerUrl = "http://localhost:44264";
 
@@ -55,15 +57,16 @@ class Game extends React.Component {
     constructor(props) {
         super(props);
         makeInitialData();
-        console.log(data);
         this.vm = dotnetify.react.connect("GameVM", this);
 		this.state = {
 			GameState: { Message: "", NextPlayerId: -1, 
 				PlayerMove: { Message: "", StartCoordinate: {X: 0, Y: 0}, EndCoordinate: {X: 0, Y: 0}},
-				Edges: []
+                Edges: [],
+                Cells: [],
+                Players: []
 			},
 			PlayerState: { Name: "", Id: "" }, 
-			TimeLeft: 60
+            TimeLeft: 60
 		};
 
 		window.addEventListener("beforeunload", (ev) => { 
@@ -72,13 +75,13 @@ class Game extends React.Component {
 	}
 
 	handleChange = (e) => {
-		console.log(this.state.GameState.Edges);
+        console.log(this.state.GameState.Edges);
 		this.vm.$dispatch({ PlayerMove: { Message: e.target.value, StartCoordinate: {X: 0, Y: 0}, EndCoordinate: {X: 1, Y: 0}} });
 	}
 
-	
-
     render() {
+        const gs = mapGameState(this.state.GameState);
+        console.log(gs);
         let itIsYourTurn = this.state.GameState.NextPlayerId === this.state.PlayerState.Id;
         return (
 			<div className="App-intro">
@@ -96,7 +99,9 @@ class Game extends React.Component {
                     <Board
                         width={500}
                         height={600}
-                        data={data}
+                        gridSize={getBoardDimensions(gs.cells)}
+                        data={gs}
+                        playerId= {1234}
                     /> : ""}
             </div>
         );

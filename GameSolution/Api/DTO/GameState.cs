@@ -54,7 +54,7 @@ namespace Web.DTO
             {
                 for (var j = 0; j < cols; j++)
                 {
-                    Cells.Add(new Cell(new Coordinate(i, j), new List<Influence>())); 
+                    Cells.Add(new Cell(new Coordinate(j, i), new List<Influence>())); 
                 }
             }
         }
