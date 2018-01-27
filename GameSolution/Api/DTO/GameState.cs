@@ -83,7 +83,7 @@ namespace Web.DTO
             var scores = Cells.GroupBy(x => x.Influence?.PlayerId)
                               .Where(x => x.Key != null)
                               .ToDictionary(x => x.Key, x => x.Count());
-            Players = Players.Select(x => new Player(x.Id, scores[x.Id], x.Color)).ToList();
+            Players = Players.Select(x => new Player(x.Id, scores.GetValueOrDefault(x.Id, 0), x.Color)).ToList();
 
         }
 
