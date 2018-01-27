@@ -54,14 +54,15 @@ namespace Web
                 Changed(nameof(TimeLeft));
                 if (TimeLeft <= 1)
                 {
-                    ResetGame();                    
+                    //ResetGame();                    
                 }
                 PushUpdates();
             }, null, 0, 1000);
 
             _eventAggregator.Subscribe<PlayerMove>(x =>
             {
-                GameState.SetMessage(x.Message);
+                GameState.SetMove(x, PlayerState.Id);
+                GameState.Message = x.Message; 
                 Changed(nameof(GameState));
                 PushUpdates();
             });
