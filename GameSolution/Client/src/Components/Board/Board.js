@@ -14,8 +14,7 @@ class Board extends Component {
         this.cornerSize = 10;
         this.edgeWeight = 7;
         this.edgeLengthRatio = 0.9;
-        this.state = {cells: [], edges: [], player: null};
-        this.consumeProps.bind(this)(props, false);
+        this.state = this.consumeProps.bind(this)(props, false);
     }
 
     consumeProps(props, useSetState) {
@@ -25,16 +24,11 @@ class Board extends Component {
         const cells = props.data.cells.map(x => this.mapCell.bind(this)(x, props.data.players));
         const edges = props.data.edges.map(this.mapEdge.bind(this));
         const player = props.data.players.filter(x => x.id === props.playerId)[0];
-        if(useSetState) {
-            this.setState({cells, edges, player});
-        } else {
-            this.state = {cells, edges, player};
-        }
-        console.log(this.state);
+        return {cells, edges, player};
     }
 
     componentWillReceiveProps(props) {
-        this.consumeProps.bind(this)(props, true);
+        this.setState(this.consumeProps.bind(this)(props, true));
     }
 
     mapInfluence(influence, players) {
@@ -124,6 +118,7 @@ class Board extends Component {
             start={info.coords.start}
             end={info.coords.end}
             onClick={this.handleEdgeClick.bind(this)}
+            activeColor={this.props.isActive ? this.state.player.color : info.color}
         />);
     }
 
@@ -134,31 +129,7 @@ class Board extends Component {
             return;
         }
         console.log(start, end);
-        changedEdge.color = this.state.player.color;
-        const cells = this.state.cells.map(x => this.updateCell(x, edges));
-        this.setState({...this.state, edges, cells});
         this.props.onEdgeSelect(changedEdge.coords);
-    }
-
-    updateCell(cell, edges) {
-        const boundingEdges = edges.filter(e => this.isEdgeBounding(e, cell));
-        const allSame = !!boundingEdges.reduce((a, b) => a.color === b.color ? a : {}).color;
-        if (!allSame) return cell;
-        if (boundingEdges[0].color === initialEdgeColor) return cell;
-        return {...cell, color: this.state.player.color};
-    }
-
-    isEdgeBounding(edge, cell) {
-        const x = cell.coords.x;
-        const y = cell.coords.y;
-        const x1 = edge.coords.start.x;
-        const y1 = edge.coords.start.y;
-        const x2 = edge.coords.end.x;
-        const y2 = edge.coords.end.y;
-        return  (x1 === x   && y1 === y   && x2 === x+1 && y2 === y)   ||
-                (x1 === x   && y1 === y   && x2 === x   && y2 === y+1) ||
-                (x1 === x+1 && y1 === y   && x2 === x+1 && y2 === y+1) ||
-                (x1 === x   && y1 === y+1 && x2 === x+1 && y2 === y+1);
     }
 
     render() {
@@ -207,7 +178,8 @@ Board.propTypes = {
             }).isRequired,
             owner: PT.number
         })).isRequired
-    }).isRequired
+    }).isRequired,
+    isActive: PT.bool.isRequired
 }
 
 export default Board;
