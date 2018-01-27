@@ -47,6 +47,7 @@ function makeInitialData() {
         rows: cells.map(c => c.coords.y).reduce((a, b) => Math.max(a, b)) + 1,
         cols: cells.map(c => c.coords.x).reduce((a, b) => Math.max(a, b)) + 1
     };
+    data.playerId = 1234;
 }
 class Game extends React.Component {
     constructor(props) {
@@ -89,9 +90,7 @@ class Game extends React.Component {
                     <Board
                         width={500}
                         height={600}
-                        rows={data.board.rows}
-                        cols={data.board.cols}
-                        playerColor="red"
+                        data={data}
                     /> : ""}
             </div>
         );

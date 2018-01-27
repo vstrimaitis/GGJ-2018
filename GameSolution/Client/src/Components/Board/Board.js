@@ -1,97 +1,74 @@
 import React, { Component } from 'react';
 import PT from 'prop-types';
 import Cell from "./Cell";
-import Corner from "./Corner";
 import Edge from "./Edge";
 import Positionable from "./Positionable"
 
-const initialCornerColor = "rgb(255, 255, 255)";
 const initialEdgeColor = "rgba(255,255,255,0.1)";//"rgb(255, 214, 150)";
 const initialCellColor = "rgb(255, 255, 255)";
 
 class Board extends Component {
     constructor(props) {
         super(props);
-        const cells = [];
-        this.cellW = props.width / props.cols;
-        this.cellH = props.height / props.rows;
+        this.cellW = props.width / props.data.board.cols;
+        this.cellH = props.height / props.data.board.rows;
         this.cornerSize = 10;
         this.edgeWeight = 7;
         this.edgeLengthRatio = 0.9;
-        for(let i = 0; i < props.rows; i++) {
-            for(let j = 0; j < props.cols; j++) {
-                cells.push({
-                    coords: {x: j, y: i},
-                    pixelCoords: {
-                        x: j*this.cellW,
-                        y: i*this.cellH,
-                    },
-                    color: initialCellColor
-                });
-            }
-        }
-        const corners = [];
-        for(let i = 0; i < props.rows+1; i++) {
-            for(let j = 0; j < props.cols+1; j++) {
-                corners.push({
-                    x: j*this.cellW-this.cornerSize/2,
-                    y: i*this.cellH-this.cornerSize/2,
-                    color: initialCornerColor
-                });
-            }
-        }
-
-        const edges = [];
-        // Horizontal edges
-        for(let i = 0; i < props.rows+1; i++) {
-            for(let j = 0; j < props.cols; j++) {
-                const x1 = j*this.cellW+this.cornerSize/2;
-                const y = i*this.cellH-this.cornerSize/2 + (this.cornerSize-this.edgeWeight)/2;
-                const x2 = (j+1)*this.cellW - this.cornerSize/2;
-                const dx = x2-x1;
-                const delta = (1-this.edgeLengthRatio)*dx/2;
-                edges.push({
-                    coords: {
-                        start: {x: j, y: i},
-                        end: {x: j+1, y: i}
-                    },
-                    pixelCoords: {x: x1+delta, y: y,},
-                    w: dx-2*delta,
-                    h: this.edgeWeight,
-                    color: initialEdgeColor
-                });
-            }
-        }
-        // Vertical edges
-        for(let i = 0; i < props.rows; i++) {
-            for(let j = 0; j < props.cols+1; j++) {
-                const x = j*this.cellW-this.cornerSize/2+ (this.cornerSize-this.edgeWeight)/2;
-                const y1 = i*this.cellH+this.cornerSize/2;
-                const y2 = (i+1)*this.cellH-this.cornerSize/2;
-                const dy = y2-y1;
-                const delta = (1-this.edgeLengthRatio)*dy/2;
-                edges.push({
-                    coords: {
-                        start: {x: j, y: i},
-                        end: {x: j, y: i+1}
-                    },
-                    pixelCoords: {x: x, y: y1+delta},
-                    w: this.edgeWeight,
-                    h: dy-2*delta,
-                    color: initialEdgeColor,
-                });
-            }
-        }
-        // edges[0].color = "red";
-        // edges[1].color = "red";
-        // edges[132].color = "red";
-        // corners[0].color = "red";
-        // corners[1].color = "red";
-        // corners[2].color = "red";
-        // corners[13].color = "red";
         
+        const cells = props.data.cells.map(this.mapCell.bind(this));
+        const edges = props.data.edges.map(this.mapEdge.bind(this));
+        const player = props.data.players.filter(x => x.id === props.data.playerId)[0];
+        this.state = {cells, edges, player};
+    }
 
-        this.state = {cells, corners, edges};
+    mapCell(cell) {
+        const newCell = {...cell};
+        newCell.pixelCoords = {
+            x: cell.coords.x*this.cellW,
+            y: cell.coords.y*this.cellH,
+        };
+        newCell.color = "white";
+        return newCell;
+    }
+
+    mapEdge(edge) {
+        const isVertical = edge.start.x === edge.end.x;
+        const newEdge = {
+            coords: {
+                start: edge.start,
+                end: edge.end
+            },
+            color: initialEdgeColor //TODO: remove
+        }
+        if(isVertical) {
+            const x = edge.start.x*this.cellW-this.cornerSize/2+ (this.cornerSize-this.edgeWeight)/2;
+            const y1 = edge.start.y*this.cellH+this.cornerSize/2;
+            const y2 = edge.end.y*this.cellH-this.cornerSize/2;
+            const dy = y2-y1;
+            const delta = (1-this.edgeLengthRatio)*dy/2;
+            newEdge.pixelCoords = {
+                x: x,
+                y: y1+delta
+            };
+            newEdge.w = this.edgeWeight;
+            newEdge.h = dy-2*delta;
+        } else {
+            const x1 = edge.start.x*this.cellW+this.cornerSize/2;
+            const y = edge.start.y*this.cellH-this.cornerSize/2 + (this.cornerSize-this.edgeWeight)/2;
+            const x2 = edge.end.x*this.cellW - this.cornerSize/2;
+            const dx = x2-x1;
+            const delta = (1-this.edgeLengthRatio)*dx/2;
+            
+            newEdge.pixelCoords = {
+                x: x1+delta,
+                y: y
+            };
+            newEdge.w = dx-2*delta;
+            newEdge.h = this.edgeWeight;
+        }
+
+        return newEdge;
     }
 
     buildPositionable(elem, info) {
@@ -112,17 +89,10 @@ class Board extends Component {
             height={info.h}
             width={info.w}
             color={info.color}
-            selectedColor={this.props.playerColor}
             start={info.coords.start}
             end={info.coords.end}
             onClick={this.handleEdgeClick.bind(this)}
         />);
-    }
-
-    corner(info) {
-        return (
-            <Corner size={this.cornerSize} color={info.color} />
-        );
     }
 
     handleEdgeClick(start, end) {
@@ -132,7 +102,7 @@ class Board extends Component {
             return;
         }
         console.log(start, end);
-        changedEdge.color = this.props.playerColor;
+        changedEdge.color = this.state.player.color;
         const cells = this.state.cells.map(x => this.updateCell(x, edges));
         this.setState({...this.state, edges, cells});
     }
@@ -142,7 +112,7 @@ class Board extends Component {
         const allSame = !!boundingEdges.reduce((a, b) => a.color === b.color ? a : {}).color;
         if (!allSame) return cell;
         if (boundingEdges[0].color === initialEdgeColor) return cell;
-        return {...cell, color: this.props.playerColor};
+        return {...cell, color: this.state.player.color};
     }
 
     isEdgeBounding(edge, cell) {
@@ -162,7 +132,6 @@ class Board extends Component {
         return (
             <div className="positionable-container" id="board" style={{width: this.props.width, height: this.props.height}}>
                 {this.state.cells.map(x => this.buildPositionable(this.cell.bind(this), x))}
-                {/* {this.state.corners.map(x => this.buildPositionable(this.corner.bind(this), x))} */}
                 {this.state.edges.map(x => this.buildPositionable(this.edge.bind(this), x))}
             </div>
         )
@@ -172,9 +141,38 @@ class Board extends Component {
 Board.propTypes = {
     width: PT.number.isRequired,
     height: PT.number.isRequired,
-    rows: PT.number.isRequired,
-    cols: PT.number.isRequired,
-    playerColor: PT.string.isRequired
+    data: PT.shape({
+        playerId: PT.number.isRequired,
+        players: PT.arrayOf(PT.shape({
+            id: PT.number.isRequired,
+            score: PT.number.isRequired,
+            color: PT.string.isRequired
+        })).isRequired,
+        board: PT.shape({
+            rows: PT.number.isRequired,
+            cols: PT.number.isRequired
+        }).isRequired,
+        cells: PT.arrayOf(PT.shape({
+            coords: PT.shape({
+                x: PT.number.isRequired,
+                y: PT.number.isRequired
+            }).isRequired,
+            influences: PT.arrayOf(PT.shape({
+                // ???
+            })).isRequired
+        })).isRequired,
+        edges: PT.arrayOf(PT.shape({
+            start: PT.shape({
+                x: PT.number.isRequired,
+                y: PT.number.isRequired
+            }).isRequired,
+            end: PT.shape({
+                x: PT.number.isRequired,
+                y: PT.number.isRequired
+            }).isRequired,
+            owner: PT.number
+        })).isRequired
+    }).isRequired
 }
 
 export default Board;
