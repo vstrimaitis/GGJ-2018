@@ -36,5 +36,5 @@ body {
 
 .cell-body {
     /* background-image: url(imgs/jelly_bg4.png); */
-    background-size: cover;
+    background-size: cover !important;
 }

@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import PT from 'prop-types';
-
+import { getCell } from '../../assets/TextureLoader.js';
 class Cell extends Component {
     render() {
+        const i = this.props.influence;
+        const image = i ? getCell(i.color, i.amount) : getCell();
+        console.log(image);
         let st = {
             width: this.props.width,
             height: this.props.height,
-            backgroundColor: this.props.color
+            background: "url("+image+")",
+            backgroundSize: "cover"
         };
         return (
             <div

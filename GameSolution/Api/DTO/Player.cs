@@ -21,7 +21,7 @@ namespace Web.DTO
 
         static Player()
         {
-            Colors = new List<string>(new string[] { "red", "green", "blue", "black", "brown" });
+            Colors = new List<string>(new string[] { "red", "green", "blue", "orange" });
         }
     }
 }
