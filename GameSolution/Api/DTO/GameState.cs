@@ -26,6 +26,7 @@ namespace Web.DTO
         internal static int LastPlayerIndex { get; set; }
         public GameState()
         {
+            ////////////////////////////////////// EDGES 
             Edges = new List<Edge>();
             int rows = 12;
             int cols = 10;
@@ -37,7 +38,6 @@ namespace Web.DTO
                     Edges.Add(new Edge(new Coordinate(j, i), new Coordinate(j + 1, i), -1));
                 }
             }
-
             // Vertical edges
             for (var i = 0; i < rows; i++)
             {
@@ -47,7 +47,16 @@ namespace Web.DTO
                 }
             }
 
+
+            ////////////////////////////////////////// CELLS 
             Cells = new List<Cell>();
+            for (var i = 0; i < rows; i++)
+            {
+                for (var j = 0; j < cols; j++)
+                {
+                    Cells.Add(new Cell(new Coordinate(i, j), new List<Influence>())); 
+                }
+            }
         }
 
         static GameState()
@@ -58,9 +67,13 @@ namespace Web.DTO
 
         internal void SetMove(PlayerMove move, int playerId)
         {
+            //Update Edges 
             Edges.RemoveAll(x => x.StartCoordinate.X == move.StartCoordinate.X && x.StartCoordinate.Y == move.StartCoordinate.Y
                 && x.EndCoordinate.X == move.EndCoordinate.X && x.EndCoordinate.Y == move.EndCoordinate.Y);
             Edges.Add(new Edge(new Coordinate(move.StartCoordinate.X, move.StartCoordinate.Y), new Coordinate(move.EndCoordinate.X, move.EndCoordinate.Y), playerId));
+
+            //Update Cells 
+            //TODO 
         }
     }
 }
