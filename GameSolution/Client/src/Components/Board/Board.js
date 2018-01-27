@@ -28,7 +28,7 @@ class Board extends Component {
             x: cell.coords.x*this.cellW,
             y: cell.coords.y*this.cellH,
         };
-        newCell.color = "white";
+        newCell.color = initialCellColor;
         return newCell;
     }
 
