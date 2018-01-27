@@ -15,6 +15,7 @@ body {
 }
 
 #board {
+    border: 5px solid white;
 }
 
 .positionable-container{

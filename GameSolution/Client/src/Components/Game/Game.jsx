@@ -77,7 +77,7 @@ class Game extends React.Component {
 	
 
     render() {
-		let itIsYourTurn = this.state.GameState.NextPlayerId === this.state.PlayerState.Id;
+        let itIsYourTurn = this.state.GameState.NextPlayerId === this.state.PlayerState.Id;
         return (
 			<div className="App-intro">
 				<p>{this.state.TimeLeft}s left</p>
