@@ -62,8 +62,9 @@ namespace Web
 
             PlayerState.Id = (new Random()).Next(1000000);
             Changed(nameof(PlayerState));
-            GameState.Players.Add(new Player(PlayerState.Id));
-            _eventAggregator.Publish(new Player(PlayerState.Id));
+            var player = new Player(PlayerState.Id);
+            GameState.Players.Add(player);
+            _eventAggregator.Publish(player);
             PushUpdates();
 
             _timer1 = new Timer(state =>

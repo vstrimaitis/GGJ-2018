@@ -13,7 +13,7 @@ namespace Web.DTO
         {
             Id = id;
             var colorIndex = new Random().Next(0, Colors.Count - 1);
-            Color = Colors[new Random().Next(0, Colors.Count - 1)];
+            Color = Colors[colorIndex];
             Colors.RemoveAt(colorIndex); 
         }
 
