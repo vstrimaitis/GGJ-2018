@@ -32,6 +32,10 @@ namespace Web
         {
             set
             {
+                if(GameState.NextPlayerId != PlayerState.Id)
+                {
+                    return;
+                }
                 GameState.Message = value.Message;
                 GameState.SetMove(value, PlayerState.Id);
                 _eventAggregator.Publish(value);
