@@ -30,10 +30,19 @@ class Board extends Component {
         } else {
             this.state = {cells, edges, player};
         }
+        console.log(this.state);
     }
 
     componentWillReceiveProps(props) {
         this.consumeProps.bind(this)(props, true);
+    }
+
+    mapInfluence(influence, players) {
+        if(!influence) return null;
+        return {
+            amount: influence.amount,
+            color: players.filter(x => x.id === influence.playerId)[0].color
+        }
     }
 
     mapCell(cell, players) {
@@ -42,10 +51,7 @@ class Board extends Component {
             x: cell.coords.x*this.cellW,
             y: cell.coords.y*this.cellH,
         };
-        newCell.influences = newCell.influences.map(x => ({
-            amount: x.amount,
-            color: players.filter(y => y.id === x.playerId)[0].color
-        })).sort((a, b) => a-b);
+        newCell.influence = this.mapInfluence(cell.influence, players);
         newCell.color = initialCellColor;
         return newCell;
     }
@@ -102,8 +108,11 @@ class Board extends Component {
             <Cell
                 width={this.cellW}
                 height={this.cellH}
-                color={info.color}
-                influences={info.influences}
+                color={
+                    info.influence ?
+                    info.influence.color :
+                    info.color}
+                influence={info.influence}
             />
         );
     }
@@ -128,6 +137,7 @@ class Board extends Component {
         changedEdge.color = this.state.player.color;
         const cells = this.state.cells.map(x => this.updateCell(x, edges));
         this.setState({...this.state, edges, cells});
+        this.props.onEdgeSelect(changedEdge.coords);
     }
 
     updateCell(cell, edges) {
@@ -169,6 +179,7 @@ Board.propTypes = {
         rows: PT.number.isRequired,
         cols: PT.number.isRequired
     }).isRequired,
+    onEdgeSelect: PT.func,
     data: PT.shape({
         players: PT.arrayOf(PT.shape({
             id: PT.number.isRequired,
@@ -180,10 +191,10 @@ Board.propTypes = {
                 x: PT.number.isRequired,
                 y: PT.number.isRequired
             }).isRequired,
-            influences: PT.arrayOf(PT.shape({
+            influence: PT.shape({
                 amount: PT.number.isRequired,
                 playerId: PT.number.isRequired
-            })).isRequired
+            })
         })).isRequired,
         edges: PT.arrayOf(PT.shape({
             start: PT.shape({

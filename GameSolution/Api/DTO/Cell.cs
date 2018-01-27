@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-
-namespace Web.DTO
+﻿namespace Web.DTO
 {
     public class Cell
     {
         public Coordinate Coordinate { get; set; }
-        public List<Influence> Influences { get; set; }
+        public Influence Influence { get; set; }
 
-        public Cell(Coordinate coordinate, List<Influence> influences)
+        public Cell(Coordinate coordinate, Influence influence)
         {
             Coordinate = coordinate;
-            Influences = influences;
+            Influence = influence;
         }
     }
 }

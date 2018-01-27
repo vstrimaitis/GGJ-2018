@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Web.DTO
@@ -56,7 +57,7 @@ namespace Web.DTO
             {
                 for (var j = 0; j < cols; j++)
                 {
-                    Cells.Add(new Cell(new Coordinate(j, i), new List<Influence>())); 
+                    Cells.Add(new Cell(new Coordinate(j, i), null)); 
                 }
             }
         }
@@ -69,11 +70,48 @@ namespace Web.DTO
         internal void SetMove(PlayerMove move, int playerId)
         {
             //Update Edges 
-            Edges.RemoveAll(x => x.StartCoordinate == move.StartCoordinate && x.EndCoordinate == move.EndCoordinate);
+            Edges.RemoveAll(x => x.StartCoordinate.Equals(move.StartCoordinate) && x.EndCoordinate.Equals(move.EndCoordinate));
             Edges.Add(new Edge(new Coordinate(move.StartCoordinate.X, move.StartCoordinate.Y), new Coordinate(move.EndCoordinate.X, move.EndCoordinate.Y), playerId));
 
             //Update Cells 
-            //TODO 
+            UpdateCells(move, playerId);
+        }
+
+        private static List<int> _influences = new List<int>() { 100, 50, 25 };
+
+        private void UpdateCells(PlayerMove move, int playerId)
+        {
+            if(move.StartCoordinate.X == move.EndCoordinate.X)
+            {
+                // Vertical edge
+                for(int i = 0; i < _influences.Count; i++)
+                {
+                    var toReplace = Cells.Where(x => x.Coordinate.Y == move.StartCoordinate.Y)
+                                         .Where(x => x.Coordinate.X == move.StartCoordinate.X - i-1 || x.Coordinate.X == move.StartCoordinate.X+i)
+                                         .Where(x => x.Influence == null || x.Influence.Level < _influences[i])
+                                         .ToList();
+                    foreach (var c in toReplace)
+                    {
+                        Cells.RemoveAll(x => x.Coordinate.Equals(c.Coordinate));
+                        Cells.Add(new Cell(c.Coordinate, new Influence(playerId, _influences[i])));
+                    }
+                }
+            } else
+            {
+                // Horizontal edge
+                for (int i = 0; i < _influences.Count; i++)
+                {
+                    var toReplace = Cells.Where(x => x.Coordinate.X == move.StartCoordinate.X)
+                                         .Where(x => x.Coordinate.Y == move.StartCoordinate.Y - i-1 || x.Coordinate.Y == move.StartCoordinate.Y+i)
+                                         .Where(x => x.Influence == null || x.Influence.Level < _influences[i])
+                                         .ToList();
+                    foreach (var c in toReplace)
+                    {
+                        Cells.RemoveAll(x => x.Coordinate.Equals(c.Coordinate));
+                        Cells.Add(new Cell(c.Coordinate, new Influence(playerId, _influences[i])));
+                    }
+                }
+            }
         }
     }
 }

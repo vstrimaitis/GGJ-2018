@@ -27,9 +27,24 @@ class Game extends React.Component {
 	}
 
 	handleChange = (e) => {
-        console.log(this.state.GameState.Edges);
 		this.vm.$dispatch({ PlayerMove: { Message: e.target.value, StartCoordinate: {X: 0, Y: 0}, EndCoordinate: {X: 1, Y: 0}} });
-	}
+    }
+    
+    handleMove = edgeCoords => {
+        console.log("SENDING", edgeCoords);
+        this.vm.$dispatch({
+            PlayerMove: {
+                StartCoordinate: {
+                    X: edgeCoords.start.x,
+                    Y: edgeCoords.start.y
+                },
+                EndCoordinate: {
+                    X: edgeCoords.end.x,
+                    Y: edgeCoords.end.y
+                }
+            }
+        });
+    }
 
     render() {
         const gs = mapGameState(this.state.GameState);
@@ -54,6 +69,7 @@ class Game extends React.Component {
                         gridSize={getBoardDimensions(gs.cells)}
                         data={gs}
                         playerId= {this.state.PlayerState.Id}
+                        onEdgeSelect={this.handleMove.bind(this)}
                     /> : ""}
             </div>
         );

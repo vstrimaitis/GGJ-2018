@@ -14,11 +14,11 @@ const mapPlayer = p => ({
 
 const mapCoordinate = c => ({x: c.X, y: c.Y});
 
-const mapInfluence = i => ({playerId: i.PlayerId, amount: i.Level});
+const mapInfluence = i => !i ? null : ({playerId: i.PlayerId, amount: i.Level});
 
 const mapCell = c => ({
     coords: mapCoordinate(c.Coordinate),
-    influences : c.Influences.map(mapInfluence)
+    influence : mapInfluence(c.Influence)
 });
 
 const mapEdge = e => ({

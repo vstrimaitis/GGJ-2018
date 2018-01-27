@@ -29,6 +29,7 @@ namespace Web
         {
             set
             {
+                GameState.SetMove(value, PlayerState.Id);
                 GameState.LastPlayerIndex++;
                 _eventAggregator.Publish(value);
             }
@@ -50,7 +51,6 @@ namespace Web
 
             _eventAggregator.Subscribe<PlayerMove>(x =>
             {
-                GameState.SetMove(x, PlayerState.Id);
                 GameState.Message = x.Message;
                 Changed(nameof(GameState));
                 PushUpdates();
