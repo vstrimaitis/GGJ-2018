@@ -14,8 +14,7 @@ class Board extends Component {
         this.cornerSize = 10;
         this.edgeWeight = 7;
         this.edgeLengthRatio = 0.9;
-        this.state = {cells: [], edges: [], player: null};
-        this.consumeProps.bind(this)(props, false);
+        this.state = this.consumeProps.bind(this)(props, false);
     }
 
     consumeProps(props, useSetState) {
@@ -25,15 +24,11 @@ class Board extends Component {
         const cells = props.data.cells.map(x => this.mapCell.bind(this)(x, props.data.players));
         const edges = props.data.edges.map(this.mapEdge.bind(this));
         const player = props.data.players.filter(x => x.id === props.playerId)[0];
-        if(useSetState) {
-            this.setState({cells, edges, player});
-        } else {
-            this.state = {cells, edges, player};
-        }
+        return {cells, edges, player};
     }
 
     componentWillReceiveProps(props) {
-        this.consumeProps.bind(this)(props, true);
+        this.setState(this.consumeProps.bind(this)(props, true));
     }
 
     mapInfluence(influence, players) {
@@ -134,22 +129,7 @@ class Board extends Component {
             return;
         }
         console.log(start, end);
-        //changedEdge.color = this.state.player.color;
-        //this.setState({...this.state, edges});
         this.props.onEdgeSelect(changedEdge.coords);
-    }
-
-    isEdgeBounding(edge, cell) {
-        const x = cell.coords.x;
-        const y = cell.coords.y;
-        const x1 = edge.coords.start.x;
-        const y1 = edge.coords.start.y;
-        const x2 = edge.coords.end.x;
-        const y2 = edge.coords.end.y;
-        return  (x1 === x   && y1 === y   && x2 === x+1 && y2 === y)   ||
-                (x1 === x   && y1 === y   && x2 === x   && y2 === y+1) ||
-                (x1 === x+1 && y1 === y   && x2 === x+1 && y2 === y+1) ||
-                (x1 === x   && y1 === y+1 && x2 === x+1 && y2 === y+1);
     }
 
     render() {
