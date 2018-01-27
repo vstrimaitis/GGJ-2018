@@ -58,7 +58,8 @@ class Game extends React.Component {
 		this.state = {
 			GameState: { Message: "", NextPlayerId: -1, 
 				PlayerMove: { Message: "", StartCoordinate: {X: 0, Y: 0}, EndCoordinate: {X: 0, Y: 0}},
-				Edges: []
+				Edges: [], Cells: [], 
+				Players: []
 			},
 			PlayerState: { Name: "", Id: "" }, 
 			TimeLeft: 60
@@ -77,6 +78,7 @@ class Game extends React.Component {
 	
 
     render() {
+		console.log(this.state.GameState.Players);
         let itIsYourTurn = this.state.GameState.NextPlayerId === this.state.PlayerState.Id;
         return (
 			<div className="App-intro">

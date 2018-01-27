@@ -19,7 +19,7 @@ namespace Web
         {
             set
             {
-                GameState.PlayerIds.Remove(PlayerState.Id);
+                GameState.Players.RemoveAll(x => x.Id == PlayerState.Id);
                 // change last player index! 
                 Dispose(); 
             }
@@ -42,10 +42,24 @@ namespace Web
             _eventAggregator = eventAggregator;
             GameState = gameState;
 
+            _eventAggregator.Subscribe<Player>(x =>
+            {                
+                Changed(nameof(GameState));
+                PushUpdates();
+            });
+
+            _eventAggregator.Subscribe<PlayerMove>(x =>
+            {
+                GameState.SetMove(x, PlayerState.Id);
+                GameState.Message = x.Message;
+                Changed(nameof(GameState));
+                PushUpdates();
+            });
+
             PlayerState.Id = (new Random()).Next(1000000);
             Changed(nameof(PlayerState));
-            GameState.PlayerIds.Add(PlayerState.Id);
-            Changed(nameof(GameState));
+            GameState.Players.Add(new Player(PlayerState.Id));
+            _eventAggregator.Publish(new Player(PlayerState.Id));
             PushUpdates();
 
             _timer1 = new Timer(state =>
@@ -57,15 +71,7 @@ namespace Web
                     //ResetGame();                    
                 }
                 PushUpdates();
-            }, null, 0, 1000);
-
-            _eventAggregator.Subscribe<PlayerMove>(x =>
-            {
-                GameState.SetMove(x, PlayerState.Id);
-                GameState.Message = x.Message; 
-                Changed(nameof(GameState));
-                PushUpdates();
-            });
+            }, null, 0, 1000);            
         }
 
         private void ResetGame()

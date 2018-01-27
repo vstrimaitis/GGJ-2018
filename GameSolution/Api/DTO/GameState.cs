@@ -9,23 +9,25 @@ namespace Web.DTO
         public List<Edge> Edges { get; set; }
         public List<Cell> Cells { get; set; }
 
-        public static List<int> PlayerIds { get; set; }
+        public List<Player> Players { get; set; }
         public int NextPlayerId
         {
             get
             {
-                if (PlayerIds == null || PlayerIds.Count == 0)
+                if (Players == null || Players.Count == 0)
                 {
                     return -1;
                 }
-                int nextIndex = LastPlayerIndex % PlayerIds.Count;
-                return PlayerIds[nextIndex];
+                int nextIndex = LastPlayerIndex % Players.Count;
+                return Players[nextIndex].Id;
             }
         }
 
         internal static int LastPlayerIndex { get; set; }
         public GameState()
         {
+            Players = new List<Player>();
+
             ////////////////////////////////////// EDGES 
             Edges = new List<Edge>();
             int rows = 12;
@@ -60,8 +62,7 @@ namespace Web.DTO
         }
 
         static GameState()
-        {
-            PlayerIds = new List<int>();
+        {            
             LastPlayerIndex = 0;
         }
 
