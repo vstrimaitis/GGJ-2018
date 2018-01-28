@@ -8,10 +8,15 @@ class App extends Component {
     super(props);
     this.state = {screen: "main"};
   }
+  handleStartClick() {
+    this.setState({
+      screen : "game"
+    })
+  }
   render() {
     return (
       <div className="App">
-        {(this.state.screen === "main") ? <Start /> : <Game />}
+        {(this.state.screen === "main") ? <Start onStartClicked={this.handleStartClick.bind(this)} /> : <Game />}
       </div>
     );
   }

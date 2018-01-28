@@ -22,7 +22,8 @@ class Start extends Component {
                             width: "10vw",
                             cursor: "pointer",
                             border: "none"
-                        }}>
+                        }}
+                        onClick={this.props.onStartClicked}>
                 </button>
             </div>
         </div>
