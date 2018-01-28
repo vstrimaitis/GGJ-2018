@@ -2,8 +2,13 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  background-color: rgb(167, 76, 16);
-  background-image: url(https://thumbs.dreamstime.com/b/toast-background-food-abstract-texture-34625229.jpg);
+  background-color: rgb(175, 197, 245);
+  /* background-image: url(https://images-na.ssl-images-amazon.com/images/I/717qBckbl2L._SL1500_.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center; */
+  /* background-color: rgb(167, 76, 16); */
+  /* background-image: url(https://thumbs.dreamstime.com/b/toast-background-food-abstract-texture-34625229.jpg); */
 }
 
 #root {
@@ -14,8 +19,8 @@ body {
   align-items: center;
 }
 
-#board {
-    border: 5px solid white;
+.board {
+    /* border: 5px solid white; */
 }
 
 .positionable-container{
@@ -37,4 +42,37 @@ body {
 .cell-body {
     /* background-image: url(imgs/jelly_bg4.png); */
     background-size: cover !important;
+}
+
+.info-bar {
+    /* height: 15vh; */
+    padding: 5px 0;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    justify-content: space-between
+}
+
+.info-bar .avatar {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
+    margin-right: 20px;
+}
+
+.info-bar .timer {
+    align-self: center;
+    width: 60px;
+}
+
+.info-bar .avatar-small img {
+    height: 5vh;
+}
+
+.info-bar .avatar-large img {
+    height: 7vh;
+}
+
+.info-bar .stretcher {
+    flex-grow: 1;
 }

@@ -4,6 +4,7 @@ import Board from '../Board/Board';
 import {mapGameState} from "../../utils/GameStateMapper";
 import {getBoardDimensions} from "../../utils/Logic";
 import Loader from "react-loader";
+import InfoBar from "../Board/InfoBar";
 
 dotnetify.hubServerUrl = "http://localhost:44264";
 
@@ -61,12 +62,22 @@ class Game extends React.Component {
         const myScore = myPlayer ? myPlayer.Score : 0;
         return (
 			<div className="App-intro">
-                <span>Player: {this.state.CurrentPlayerTimeLeft}s / Total: {this.state.TimeLeft}s</span>
+                {/* <span>Player: {this.state.CurrentPlayerTimeLeft}s / Total: {this.state.TimeLeft}s</span>
 				<p>Hello, {this.state.PlayerState.Id}</p>
                 <p>{gs.players.map(x => x.id === this.state.GameState.NextPlayerId ? <b>{x.id+","}</b> : x.id+",")}</p>
-				<span>Your score: {myScore}</span>
+				<span>Your score: {myScore}</span> */}
 
                 <Loader loaded={this.state.PlayerState.Id > -1}>
+                    <InfoBar
+                        timeLeft={{
+                            player: this.state.CurrentPlayerTimeLeft,
+                            game: this.state.TimeLeft
+                        }}
+                        players={
+                            gs.players.map(x => x.id === myPlayer.Id ? {...x, isPlayer: true} : x)
+                                        .map(x => x.id === this.state.GameState.NextPlayerId ? {...x, isCurrent: true} : x)
+                        }
+                    />
                     <Board
                         width={500}
                         height={600}
