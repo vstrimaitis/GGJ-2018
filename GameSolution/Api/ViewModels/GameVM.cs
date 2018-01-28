@@ -111,7 +111,7 @@ namespace Web
 
                     _eventAggregator.Publish<Player>(null);
                 }
-                if (TimeLeft < 1)
+                if (TimeLeft < 1 && !GameState.GameEnded)
                 {
                     StopGame();                    
                 }
@@ -129,9 +129,9 @@ namespace Web
             GameState.GameEnded = false; 
             _gameStartedTime = DateTime.Now;
             _playerGameStartedTime = DateTime.Now;
-            CurrentPlayerTimeLeft = TurnDuration; 
+            CurrentPlayerTimeLeft = TurnDuration;
             _eventAggregator.Publish<Player>(null);
-        }
+        }             
 
         private void StopGame()
         {
