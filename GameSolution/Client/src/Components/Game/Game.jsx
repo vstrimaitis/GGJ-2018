@@ -57,14 +57,23 @@ class Game extends React.Component {
         });
     }
 
+    restartGame = () => {
+        if(this.state.GameState.GameEnded)
+        {
+            this.vm.$dispatch({ RestartGame: true }); 
+        }
+    }
+
     render() {
         const gs = mapGameState(this.state.GameState);
         console.log("Current mapped state", gs);
         let itIsYourTurn = this.state.GameState.NextPlayerId === this.state.PlayerState.Id;
         const myPlayer = this.state.GameState.Players.filter(x => x.Id === this.state.PlayerState.Id)[0];
         const myScore = myPlayer ? myPlayer.Score : 0;
-        return (
+        return (            
 			<div className="App-intro">
+                {!this.state.GameState.GameEnded ?                 
+                <div>
                 {/* <span>Player: {this.state.CurrentPlayerTimeLeft}s / Total: {this.state.TimeLeft}s</span>
 				<p>Hello, {this.state.PlayerState.Id}</p>
                 <p>{gs.players.map(x => x.id === this.state.GameState.NextPlayerId ? <b>{x.id+","}</b> : x.id+",")}</p>
@@ -91,7 +100,10 @@ class Game extends React.Component {
                         isActive={itIsYourTurn}
                     />
                 </Loader>
-            </div>
+                </div>
+                : 
+                <div>Game Ended</div>}
+            </div>            
         );
     }
 }

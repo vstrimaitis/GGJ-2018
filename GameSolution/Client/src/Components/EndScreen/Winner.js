@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { getMainImage, getButton } from '../../assets/TextureLoader';
+import { getWinnerImage, getRetryButton } from '../../assets/TextureLoader';
 
 
-class Start extends Component {
+class Looser extends Component {
     render() {
         return(
         <div>
-            <img src={getMainImage()} style={{
+            <img src={getWinnerImage()} style={{
                 position: "relative",
                 top: 0,
                 left: 0,
@@ -14,7 +14,7 @@ class Start extends Component {
                 }}/>
             <div>
                 <button style={{position: "absolute",
-                            top: "70vh", 
+                            top: "78vh", 
                             height:"10vh",
                             left: "46vw",
                             background: "none",
@@ -22,8 +22,8 @@ class Start extends Component {
                             border: "none",
                             padding: 0
                         }}
-                        onClick={this.props.onStartClicked}>
-                        <img src={getButton()} style={{
+                        >
+                        <img src={getRetryButton()} style={{
                             maxHeight: "100%"
                         }}/>
                 </button>
@@ -32,4 +32,4 @@ class Start extends Component {
         );
     }
 }
-export default Start;
+export default Looser;

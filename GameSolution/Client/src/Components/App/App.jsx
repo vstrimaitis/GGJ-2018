@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import Game from '../Game/Game';
 import Start from '../StartScreen/Start';
+import Looser from '../EndScreen/Looser';
+import Winner from '../EndScreen/Winner';
 
 class App extends Component {
   constructor(props) {
