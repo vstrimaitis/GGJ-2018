@@ -63,7 +63,7 @@ class Game extends React.Component {
     }
 
     handleRetryClick() {
-        //cia kviesti restartGame
+        this.restartGame();
         this.setState({
           screen : "game"
         });
