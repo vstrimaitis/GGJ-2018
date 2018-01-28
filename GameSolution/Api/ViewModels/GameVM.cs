@@ -101,9 +101,11 @@ namespace Web
             var players = GameState.Players; 
             GameState = new GameState();
             GameState.Players = players;
-            //GameState.LastPlayerId = GameState.Players.Count > 0 ? GameState.Players[0].Id : 0; 
+            GameState.Players.ForEach(x => x.Score = 0); 
+            GameState.LastPlayerId = GameState.Players.Count > 0 ? GameState.Players[0].Id : 0; 
             _gameStartedTime = DateTime.Now;
             _playerGameStartedTime = DateTime.Now;
+            CurrentPlayerTimeLeft = 15; 
             _eventAggregator.Publish<Player>(null);
         }
 
