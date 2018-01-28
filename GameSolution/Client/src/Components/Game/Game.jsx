@@ -61,17 +61,10 @@ class Game extends React.Component {
         const myScore = myPlayer ? myPlayer.Score : 0;
         return (
 			<div className="App-intro">
-				<p>Player {this.state.PlayerState.Id} has {this.state.CurrentPlayerTimeLeft}s left</p>
-				<p>The game has {this.state.TimeLeft}s left</p>
+                <span>Player: {this.state.CurrentPlayerTimeLeft}s / Total: {this.state.TimeLeft}s</span>
 				<p>Hello, {this.state.PlayerState.Id}</p>
-				<p>{itIsYourTurn ? "It is your turn!" : "Wait for your turn..."} {this.state.GameState.NextPlayerId}</p>
-				<p>Broadcasted state: {this.state.GameState.Message}</p>
-
-				<input type="text"
-					value={this.props.value}
-					onChange={this.handleChange} disabled={!itIsYourTurn}>
-				</input>
-                <span>Your score: {myScore}</span>
+                <p>{gs.players.map(x => x.id === this.state.GameState.NextPlayerId ? <b>{x.id+","}</b> : x.id+",")}</p>
+				<span>Your score: {myScore}</span>
 
                 <Loader loaded={this.state.PlayerState.Id > -1}>
                     <Board

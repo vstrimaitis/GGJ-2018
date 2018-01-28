@@ -116,6 +116,7 @@ namespace Web
 
         private void ResetPlayer(Player player)
         {
+            if (player == null) return;
             int playerId = player.Id;
             GameState.Cells = GameState.Cells
                                        .Select(x => x.Influence?.PlayerId == playerId ? new Cell(x.Coordinate, null) : x)

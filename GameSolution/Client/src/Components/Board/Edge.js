@@ -21,6 +21,7 @@ class Edge extends Component {
                 <div
                     onMouseOver={() => this.setState({color: this.props.color})}
                     onMouseOut={() => this.setState({color: "transparent"})}
+                    onMouseUp={() => this.setState({color: "transparent"})}
                     onClick={() => this.props.onClick(this.props.start, this.props.end)}
                     className="positionable-item cell-edge"
                     style={st}
