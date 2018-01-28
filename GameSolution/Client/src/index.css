@@ -2,13 +2,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  background-color: rgb(175, 197, 245);
-  /* background-image: url(https://images-na.ssl-images-amazon.com/images/I/717qBckbl2L._SL1500_.jpg);
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center; */
-  /* background-color: rgb(167, 76, 16); */
-  /* background-image: url(https://thumbs.dreamstime.com/b/toast-background-food-abstract-texture-34625229.jpg); */
+  background: url(imgs/texture.png);
 }
 
 #root {
@@ -20,7 +14,7 @@ body {
 }
 
 .board {
-    /* border: 5px solid white; */
+    border: 5px solid rgba(255,255,255,0.6);
 }
 
 .positionable-container{
@@ -46,7 +40,7 @@ body {
 
 .info-bar {
     /* height: 15vh; */
-    padding: 5px 0;
+    padding-top: 10px;
     background-color: rgba(255, 255, 255, 0.6);
     border-radius: 20px 20px 0 0;
     display: flex;
