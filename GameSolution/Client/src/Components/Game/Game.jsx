@@ -70,7 +70,7 @@ class Game extends React.Component {
                 <p>{gs.players.map(x => x.id === this.state.GameState.NextPlayerId ? <b>{x.id+","}</b> : x.id+",")}</p>
 				<span>Your score: {myScore}</span> */}
 
-                <Loader loaded={this.state.PlayerState.Id > -1}>
+                <Loader loaded={this.state.PlayerState.Id > -1 && gs.players.length > 0}>
                     <InfoBar
                         timeLeft={{
                             player: this.state.CurrentPlayerTimeLeft,
