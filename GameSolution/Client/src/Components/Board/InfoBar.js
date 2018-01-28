@@ -12,6 +12,7 @@ class InfoBar extends Component {
         return result;*/
         return (
             <Avatar
+                key={player.id}
                 color={player.color}
                 score={player.score}
                 size={player.isCurrent ? "large" : "small"}

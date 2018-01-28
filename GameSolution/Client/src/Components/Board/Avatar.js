@@ -19,7 +19,7 @@ Avatar.propTypes = {
     color: PT.string.isRequired,
     score: PT.number.isRequired,
     text: PT.string,
-    size: PT.oneOf("small", "large").isRequired
+    size: PT.oneOf(["small", "large"]).isRequired
 };
 
 export default Avatar;
