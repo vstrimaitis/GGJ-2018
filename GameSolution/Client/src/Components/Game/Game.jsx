@@ -19,7 +19,8 @@ class Game extends React.Component {
                 Players: []
 			},
 			PlayerState: { Name: "", Id: -1 }, 
-            TimeLeft: 60
+            TimeLeft: 60,
+			CurrentPlayerTimeLeft: 15 
 		};
 
 		window.addEventListener("beforeunload", (ev) => { 
@@ -60,7 +61,8 @@ class Game extends React.Component {
         const myScore = myPlayer ? myPlayer.Score : 0;
         return (
 			<div className="App-intro">
-				<p>{this.state.TimeLeft}s left</p>
+				<p>Player {this.state.PlayerState.Id} has {this.state.CurrentPlayerTimeLeft}s left</p>
+				<p>The game has {this.state.TimeLeft}s left</p>
 				<p>Hello, {this.state.PlayerState.Id}</p>
 				<p>{itIsYourTurn ? "It is your turn!" : "Wait for your turn..."} {this.state.GameState.NextPlayerId}</p>
 				<p>Broadcasted state: {this.state.GameState.Message}</p>
