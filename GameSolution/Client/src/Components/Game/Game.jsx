@@ -24,9 +24,12 @@ class Game extends React.Component {
 			CurrentPlayerTimeLeft: 15 
 		};
 
+        // dotnetify.hub.disconnected(() => {
+        //     this.vm.$dispatch({ PlayerExited: true });
+        // });
 		window.addEventListener("beforeunload", (ev) => { 
-			ev.preventDefault(); 
-			this.vm.$dispatch({ PlayerExited: true });
+            ev.preventDefault(); 
+            this.vm.$dispatch({ PlayerExited: true });
 		});
 	}
 
