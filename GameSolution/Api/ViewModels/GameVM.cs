@@ -23,9 +23,7 @@ namespace Web
             {
                 var player = GameState.Players.Find(x => x.Id == PlayerState.Id);
                 ResetPlayer(player);
-
-                // should we add event aggregator message here? 
-
+                _eventAggregator.Publish<Player>(null); 
                 Dispose(); 
             }
         }
@@ -88,7 +86,7 @@ namespace Web
                 }
                 if (TimeLeft <= 1)
                 {
-                    ResetGame();                    
+                    StopGame();                    
                 }
                 Changed(nameof(TimeLeft));
                 Changed(nameof(CurrentPlayerTimeLeft));
@@ -97,15 +95,23 @@ namespace Web
         }
 
         private void ResetGame()
-        {
-            var players = GameState.Players; 
-            GameState = new GameState();
-            GameState.Players = players;
+        {            
             GameState.Players.ForEach(x => x.Score = 0); 
-            GameState.LastPlayerId = GameState.Players.Count > 0 ? GameState.Players[0].Id : 0; 
+            GameState.LastPlayerId = GameState.Players.Count > 0 ? GameState.Players[0].Id : 0;
+            GameState.GameEnded = false; 
             _gameStartedTime = DateTime.Now;
             _playerGameStartedTime = DateTime.Now;
             CurrentPlayerTimeLeft = 15; 
+            _eventAggregator.Publish<Player>(null);
+        }
+
+        private void StopGame()
+        {
+            var players = GameState.Players;
+            GameState = new GameState();
+            GameState.Players = players;
+            GameState.GameEnded = true; 
+            GameState.LastPlayerId = -1;
             _eventAggregator.Publish<Player>(null);
         }
 

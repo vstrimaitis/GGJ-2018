@@ -8,6 +8,7 @@ namespace Web.DTO
     {
         private static List<int> _influences = new List<int>() { 100, 50, 25 };
 
+        public bool GameEnded { get; set; }
         public string Message { get; internal set; }
         public List<Edge> Edges { get; set; }
         public List<Cell> Cells { get; set; }
