@@ -9,6 +9,8 @@ namespace Web
 {
     public class GameVM : BaseVM
     {
+        private static readonly int MatchDuration = 60;
+        private static readonly int TurnDuration = 15;
         private readonly IEventAggregator _eventAggregator;
         private static DateTime _gameStartedTime = DateTime.Now;
         private static DateTime _playerGameStartedTime = DateTime.Now; 
@@ -75,16 +77,16 @@ namespace Web
 
             _timer1 = new Timer(state =>
             {
-                TimeLeft = 60 - (DateTime.Now - _gameStartedTime).Seconds;
-                CurrentPlayerTimeLeft = 15 - (DateTime.Now - _playerGameStartedTime).Seconds;                 
-                if (CurrentPlayerTimeLeft <= 1 && GameState.NextPlayerId == PlayerState.Id)
+                TimeLeft = MatchDuration - (DateTime.Now - _gameStartedTime).Seconds;
+                CurrentPlayerTimeLeft = TurnDuration - (DateTime.Now - _playerGameStartedTime).Seconds;                 
+                if (CurrentPlayerTimeLeft < 1 && GameState.NextPlayerId == PlayerState.Id)
                 {
                     _playerGameStartedTime = DateTime.Now;
-                    CurrentPlayerTimeLeft = 15;
+                    CurrentPlayerTimeLeft = TurnDuration;
                     GameState.LastPlayerId = PlayerState.Id;
                     _eventAggregator.Publish<Player>(null);
                 }
-                if (TimeLeft <= 1)
+                if (TimeLeft < 1)
                 {
                     StopGame();                    
                 }
@@ -101,7 +103,7 @@ namespace Web
             GameState.GameEnded = false; 
             _gameStartedTime = DateTime.Now;
             _playerGameStartedTime = DateTime.Now;
-            CurrentPlayerTimeLeft = 15; 
+            CurrentPlayerTimeLeft = TurnDuration; 
             _eventAggregator.Publish<Player>(null);
         }
 

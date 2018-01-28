@@ -29,7 +29,7 @@ namespace Web
             app.UseDotNetify(config => config.UseMiddleware<ContextMiddleware>());
             app.Run(async (context) =>
             {
-                await context.Response.WriteAsync("HelloWorld server");
+                await context.Response.WriteAsync("SpreadJam server");
             });
         }
 
