@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { getWinnerImage, getRetryButton } from '../../assets/TextureLoader';
 
 
-class Looser extends Component {
+class Winner extends Component {
     render() {
         return(
         <div>
@@ -32,4 +32,4 @@ class Looser extends Component {
         );
     }
 }
-export default Looser;
+export default Winner;
