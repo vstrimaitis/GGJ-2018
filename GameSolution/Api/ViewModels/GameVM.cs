@@ -94,6 +94,7 @@ namespace Web
             }, null, 0, 1000);            
         }
 
+        public bool RestartGame { set { ResetGame(); } }
         private void ResetGame()
         {            
             GameState.Players.ForEach(x => x.Score = 0); 

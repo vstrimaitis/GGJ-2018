@@ -55,7 +55,10 @@ class Game extends React.Component {
     }
 
     restartGame = () => {
-        // handle game restart  
+        if(this.state.GameState.GameEnded)
+        {
+            this.vm.$dispatch({ RestartGame: true }); 
+        }
     }
 
     render() {
@@ -66,7 +69,7 @@ class Game extends React.Component {
         const myScore = myPlayer ? myPlayer.Score : 0;
         return (            
 			<div className="App-intro">
-                {this.state.GameState.GameEnded ? 
+                {!this.state.GameState.GameEnded ?                 
                 <div>
                 {/* <span>Player: {this.state.CurrentPlayerTimeLeft}s / Total: {this.state.TimeLeft}s</span>
 				<p>Hello, {this.state.PlayerState.Id}</p>
@@ -96,7 +99,7 @@ class Game extends React.Component {
                 </Loader>
                 </div>
                 : 
-                <div>Game ended</div>}
+                <div>Game Ended</div>}
             </div>            
         );
     }
