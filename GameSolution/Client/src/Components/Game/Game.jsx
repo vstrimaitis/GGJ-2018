@@ -5,6 +5,7 @@ import {mapGameState} from "../../utils/GameStateMapper";
 import {getBoardDimensions} from "../../utils/Logic";
 import Loader from "react-loader";
 import InfoBar from "../Board/InfoBar";
+import End from "../EndScreen/End";
 
 dotnetify.hubServerUrl = "http://localhost:44264";
 
@@ -55,8 +56,14 @@ class Game extends React.Component {
     }
 
     restartGame = () => {
-        // handle game restart  
     }
+
+    handleRetryClick() {
+        //cia kviesti restartGame
+        this.setState({
+          screen : "game"
+        });
+      }
 
     render() {
         const gs = mapGameState(this.state.GameState);
@@ -95,7 +102,7 @@ class Game extends React.Component {
                 </Loader>
                 </div>
                 : 
-                <div>Game ended</div>}
+                <div> <End players={gs.players} score={myScore} onRetryClicked={this.handleRetryClick.bind(this)}/> </div>}
             </div>            
         );
     }

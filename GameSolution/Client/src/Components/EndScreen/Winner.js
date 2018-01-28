@@ -22,6 +22,7 @@ class Winner extends Component {
                             border: "none",
                             padding: 0
                         }}
+                        onClick={this.props.onRetryClicked}
                         >
                         <img src={getRetryButton()} style={{
                             maxHeight: "100%"
