@@ -3,6 +3,7 @@ import dotnetify from 'dotnetify';
 import Board from '../Board/Board';
 import {mapGameState} from "../../utils/GameStateMapper";
 import {getBoardDimensions} from "../../utils/Logic";
+import Loader from "react-loader";
 
 dotnetify.hubServerUrl = "http://localhost:44264";
 
@@ -17,7 +18,7 @@ class Game extends React.Component {
                 Cells: [],
                 Players: []
 			},
-			PlayerState: { Name: "", Id: "" }, 
+			PlayerState: { Name: "", Id: -1 }, 
             TimeLeft: 60
 		};
 
@@ -53,7 +54,7 @@ class Game extends React.Component {
 
     render() {
         const gs = mapGameState(this.state.GameState);
-        console.log("Current state", gs);
+        console.log("Current mapped state", gs);
         let itIsYourTurn = this.state.GameState.NextPlayerId === this.state.PlayerState.Id;
         const myPlayer = this.state.GameState.Players.filter(x => x.Id === this.state.PlayerState.Id)[0];
         const myScore = myPlayer ? myPlayer.Score : 0;
@@ -70,7 +71,7 @@ class Game extends React.Component {
 				</input>
                 <span>Your score: {myScore}</span>
 
-				{true ?
+                <Loader loaded={this.state.PlayerState.Id > -1}>
                     <Board
                         width={500}
                         height={600}
@@ -79,7 +80,8 @@ class Game extends React.Component {
                         playerId= {this.state.PlayerState.Id}
                         onEdgeSelect={this.handleMove.bind(this)}
                         isActive={itIsYourTurn}
-                    /> : ""}
+                    />
+                </Loader>
             </div>
         );
     }

@@ -33,9 +33,11 @@ class Board extends Component {
 
     mapInfluence(influence, players) {
         if(!influence) return null;
+        const player = players.filter(x => x.id === influence.playerId);
+        if(player.length === 0) return null;
         return {
             amount: influence.amount,
-            color: players.filter(x => x.id === influence.playerId)[0].color
+            color: player[0].color
         }
     }
 
