@@ -1,6 +1,7 @@
 using DotNetify;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using Web.DTO;
 
@@ -20,8 +21,7 @@ namespace Web
             set
             {
                 var player = GameState.Players.Find(x => x.Id == PlayerState.Id);
-                GameState.Players.Remove(player);
-                Player.Colors.Add(player.Color);
+                ResetPlayer(player);
 
                 // should we add event aggregator message here? 
 
@@ -98,6 +98,19 @@ namespace Web
             _timer1.Dispose();
             _eventAggregator.Unsubscribe(_playerSubscription);
             _eventAggregator.Unsubscribe(_playerMoveSubscription);
+        }
+
+        private void ResetPlayer(Player player)
+        {
+            int playerId = player.Id;
+            GameState.Cells = GameState.Cells
+                                       .Select(x => x.Influence?.PlayerId == playerId ? new Cell(x.Coordinate, null) : x)
+                                       .ToList();
+            GameState.Edges = GameState.Edges
+                                       .Select(x => x.PlayerId == playerId ? new Edge(x.StartCoordinate, x.EndCoordinate, -1) : x)
+                                       .ToList();
+            GameState.Players.Remove(player);
+            Player.Colors.Add(player.Color);
         }
     }
 }
