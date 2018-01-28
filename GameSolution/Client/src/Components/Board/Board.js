@@ -135,7 +135,7 @@ class Board extends Component {
 
     render() {
         return (
-            <div className="positionable-container" id="board" style={{width: this.props.width, height: this.props.height}}>
+            <div className="positionable-container board" style={{width: this.props.width, height: this.props.height}}>
                 {this.state.cells.map(x => this.buildPositionable(this.cell.bind(this), x))}
                 {this.state.edges.map(x => this.buildPositionable(this.edge.bind(this), x))}
             </div>
