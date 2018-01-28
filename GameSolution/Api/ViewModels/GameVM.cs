@@ -16,6 +16,7 @@ namespace Web
         private readonly IEventAggregator _eventAggregator;
         private static DateTime _gameStartedTime = DateTime.Now;
         private static DateTime _playerGameStartedTime = DateTime.Now;
+        private bool _gameEnded; 
 
         public GameState GameState { get; set; }
 
@@ -111,8 +112,9 @@ namespace Web
 
                     _eventAggregator.Publish<Player>(null);
                 }
-                if (TimeLeft < 1 && !GameState.GameEnded)
+                if (TimeLeft < 1 && !_gameEnded)
                 {
+                    _gameEnded = true; 
                     StopGame();                    
                 }
                 Changed(nameof(TimeLeft));
@@ -123,7 +125,8 @@ namespace Web
 
         public bool RestartGame { set { ResetGame(); } }
         private void ResetGame()
-        {            
+        {
+            _gameEnded = false; 
             GameState.Players.ForEach(x => x.Score = 0); 
             GameState.LastPlayerId = GameState.Players.Count > 0 ? GameState.Players[0].Id : 0;
             GameState.GameEnded = false; 
