@@ -33,9 +33,11 @@ class Board extends Component {
 
     mapInfluence(influence, players) {
         if(!influence) return null;
+        const player = players.filter(x => x.id === influence.playerId);
+        if(player.length === 0) return null;
         return {
             amount: influence.amount,
-            color: players.filter(x => x.id === influence.playerId)[0].color
+            color: player[0].color
         }
     }
 
@@ -133,7 +135,7 @@ class Board extends Component {
 
     render() {
         return (
-            <div className="positionable-container" id="board" style={{width: this.props.width, height: this.props.height}}>
+            <div className="positionable-container board" style={{width: this.props.width, height: this.props.height}}>
                 {this.state.cells.map(x => this.buildPositionable(this.cell.bind(this), x))}
                 {this.state.edges.map(x => this.buildPositionable(this.edge.bind(this), x))}
             </div>

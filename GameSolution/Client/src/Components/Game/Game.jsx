@@ -3,6 +3,8 @@ import dotnetify from 'dotnetify';
 import Board from '../Board/Board';
 import {mapGameState} from "../../utils/GameStateMapper";
 import {getBoardDimensions} from "../../utils/Logic";
+import Loader from "react-loader";
+import InfoBar from "../Board/InfoBar";
 
 dotnetify.hubServerUrl = "http://localhost:44264";
 
@@ -17,8 +19,8 @@ class Game extends React.Component {
                 Cells: [],
                 Players: []
 			},
-			PlayerState: { Name: "", Id: "" }, 
-			TimeLeft: 60, 
+			PlayerState: { Name: "", Id: -1 }, 
+            TimeLeft: 60,
 			CurrentPlayerTimeLeft: 15 
 		};
 
@@ -54,25 +56,28 @@ class Game extends React.Component {
 
     render() {
         const gs = mapGameState(this.state.GameState);
-        console.log("Current state", gs);
+        console.log("Current mapped state", gs);
         let itIsYourTurn = this.state.GameState.NextPlayerId === this.state.PlayerState.Id;
         const myPlayer = this.state.GameState.Players.filter(x => x.Id === this.state.PlayerState.Id)[0];
         const myScore = myPlayer ? myPlayer.Score : 0;
         return (
 			<div className="App-intro">
-				<p>Player {this.state.PlayerState.Id} has {this.state.CurrentPlayerTimeLeft}s left</p>
-				<p>The game has {this.state.TimeLeft}s left</p>
+                {/* <span>Player: {this.state.CurrentPlayerTimeLeft}s / Total: {this.state.TimeLeft}s</span>
 				<p>Hello, {this.state.PlayerState.Id}</p>
-				<p>{itIsYourTurn ? "It is your turn!" : "Wait for your turn..."} {this.state.GameState.NextPlayerId}</p>
-				<p>Broadcasted state: {this.state.GameState.Message}</p>
+                <p>{gs.players.map(x => x.id === this.state.GameState.NextPlayerId ? <b>{x.id+","}</b> : x.id+",")}</p>
+				<span>Your score: {myScore}</span> */}
 
-				<input type="text"
-					value={this.props.value}
-					onChange={this.handleChange} disabled={!itIsYourTurn}>
-				</input>
-                <span>Your score: {myScore}</span>
-
-				{true ?
+                <Loader loaded={this.state.PlayerState.Id > -1}>
+                    <InfoBar
+                        timeLeft={{
+                            player: this.state.CurrentPlayerTimeLeft,
+                            game: this.state.TimeLeft
+                        }}
+                        players={
+                            gs.players.map(x => x.id === myPlayer.Id ? {...x, isPlayer: true} : x)
+                                        .map(x => x.id === this.state.GameState.NextPlayerId ? {...x, isCurrent: true} : x)
+                        }
+                    />
                     <Board
                         width={500}
                         height={600}
@@ -81,7 +86,8 @@ class Game extends React.Component {
                         playerId= {this.state.PlayerState.Id}
                         onEdgeSelect={this.handleMove.bind(this)}
                         isActive={itIsYourTurn}
-                    /> : ""}
+                    />
+                </Loader>
             </div>
         );
     }

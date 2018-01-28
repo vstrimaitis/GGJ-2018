@@ -1,6 +1,7 @@
 using DotNetify;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using Web.DTO;
 
@@ -21,11 +22,8 @@ namespace Web
             set
             {
                 var player = GameState.Players.Find(x => x.Id == PlayerState.Id);
-                GameState.Players.Remove(player);
-                Player.Colors.Add(player.Color);
-
-                // should we add event aggregator message here? 
-
+                ResetPlayer(player);
+                _eventAggregator.Publish<Player>(null); 
                 Dispose(); 
             }
         }
@@ -88,7 +86,7 @@ namespace Web
                 }
                 if (TimeLeft <= 1)
                 {
-                    ResetGame();                    
+                    StopGame();                    
                 }
                 Changed(nameof(TimeLeft));
                 Changed(nameof(CurrentPlayerTimeLeft));
@@ -97,13 +95,23 @@ namespace Web
         }
 
         private void ResetGame()
-        {
-            var players = GameState.Players; 
-            GameState = new GameState();
-            GameState.Players = players;
-            //GameState.LastPlayerId = GameState.Players.Count > 0 ? GameState.Players[0].Id : 0; 
+        {            
+            GameState.Players.ForEach(x => x.Score = 0); 
+            GameState.LastPlayerId = GameState.Players.Count > 0 ? GameState.Players[0].Id : 0;
+            GameState.GameEnded = false; 
             _gameStartedTime = DateTime.Now;
             _playerGameStartedTime = DateTime.Now;
+            CurrentPlayerTimeLeft = 15; 
+            _eventAggregator.Publish<Player>(null);
+        }
+
+        private void StopGame()
+        {
+            var players = GameState.Players;
+            GameState = new GameState();
+            GameState.Players = players;
+            GameState.GameEnded = true; 
+            GameState.LastPlayerId = -1;
             _eventAggregator.Publish<Player>(null);
         }
 
@@ -112,6 +120,20 @@ namespace Web
             _timer1.Dispose();
             _eventAggregator.Unsubscribe(_playerSubscription);
             _eventAggregator.Unsubscribe(_playerMoveSubscription);
+        }
+
+        private void ResetPlayer(Player player)
+        {
+            if (player == null) return;
+            int playerId = player.Id;
+            GameState.Cells = GameState.Cells
+                                       .Select(x => x.Influence?.PlayerId == playerId ? new Cell(x.Coordinate, null) : x)
+                                       .ToList();
+            GameState.Edges = GameState.Edges
+                                       .Select(x => x.PlayerId == playerId ? new Edge(x.StartCoordinate, x.EndCoordinate, -1) : x)
+                                       .ToList();
+            GameState.Players.Remove(player);
+            Player.Colors.Add(player.Color);
         }
     }
 }
