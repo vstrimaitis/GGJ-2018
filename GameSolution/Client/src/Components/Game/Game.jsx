@@ -25,9 +25,12 @@ class Game extends React.Component {
 			CurrentPlayerTimeLeft: 15 
 		};
 
+        // dotnetify.hub.disconnected(() => {
+        //     this.vm.$dispatch({ PlayerExited: true });
+        // });
 		window.addEventListener("beforeunload", (ev) => { 
-			ev.preventDefault(); 
-			this.vm.$dispatch({ PlayerExited: true });
+            ev.preventDefault(); 
+            this.vm.$dispatch({ PlayerExited: true });
 		});
 	}
 
@@ -82,8 +85,9 @@ class Game extends React.Component {
                 {/* <span>Player: {this.state.CurrentPlayerTimeLeft}s / Total: {this.state.TimeLeft}s</span>
 				<p>Hello, {this.state.PlayerState.Id}</p>
                 <p>{gs.players.map(x => x.id === this.state.GameState.NextPlayerId ? <b>{x.id+","}</b> : x.id+",")}</p>
-                <span>Your score: {myScore}</span> */}
-                <Loader loaded={this.state.PlayerState.Id > -1}>
+				<span>Your score: {myScore}</span> */}
+
+                <Loader loaded={this.state.PlayerState.Id > -1 && gs.players.length > 0}>
                     <InfoBar
                         timeLeft={{
                             player: this.state.CurrentPlayerTimeLeft,

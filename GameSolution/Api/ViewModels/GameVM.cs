@@ -1,5 +1,6 @@
 using DotNetify;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -9,9 +10,12 @@ namespace Web
 {
     public class GameVM : BaseVM
     {
+        private readonly Dictionary<int, int> _missedTurns = new Dictionary<int, int>();
+        private static readonly int MatchDuration = 60;
+        private static readonly int TurnDuration = 15;
         private readonly IEventAggregator _eventAggregator;
         private static DateTime _gameStartedTime = DateTime.Now;
-        private static DateTime _playerGameStartedTime = DateTime.Now; 
+        private static DateTime _playerGameStartedTime = DateTime.Now;
 
         public GameState GameState { get; set; }
 
@@ -21,11 +25,16 @@ namespace Web
         {
             set
             {
-                var player = GameState.Players.Find(x => x.Id == PlayerState.Id);
-                ResetPlayer(player);
-                _eventAggregator.Publish<Player>(null); 
-                Dispose(); 
+                RemovePlayer();
             }
+        }
+
+        private void RemovePlayer()
+        {
+            var player = GameState.Players.Find(x => x.Id == PlayerState.Id);
+            ResetPlayer(player);
+            _eventAggregator.Publish<Player>(null);
+            Dispose();
         }
 
         public PlayerMove PlayerMove
@@ -36,6 +45,7 @@ namespace Web
                 {
                     return;
                 }
+                _missedTurns[PlayerState.Id] = 0;
                 GameState.Message = value.Message;
                 GameState.SetMove(value, PlayerState.Id);
                 _playerGameStartedTime = DateTime.Now; 
@@ -71,20 +81,37 @@ namespace Web
             var player = new Player(PlayerState.Id);
             GameState.Players.Add(player);
             _eventAggregator.Publish(player);
+            _missedTurns[player.Id] = 0;
             PushUpdates();
 
             _timer1 = new Timer(state =>
             {
-                TimeLeft = 60 - (DateTime.Now - _gameStartedTime).Seconds;
-                CurrentPlayerTimeLeft = 15 - (DateTime.Now - _playerGameStartedTime).Seconds;                 
-                if (CurrentPlayerTimeLeft <= 1 && GameState.NextPlayerId == PlayerState.Id)
+                TimeLeft = MatchDuration - (DateTime.Now - _gameStartedTime).Seconds;
+                CurrentPlayerTimeLeft = TurnDuration - (DateTime.Now - _playerGameStartedTime).Seconds;                 
+                if (CurrentPlayerTimeLeft < 1 && GameState.NextPlayerId == PlayerState.Id)
                 {
+                    if(!_missedTurns.ContainsKey(PlayerState.Id))
+                    {
+                        _missedTurns[PlayerState.Id] = 10000;
+                    }
+                    else
+                    {
+                        _missedTurns[PlayerState.Id]++;
+                    }
+                    
                     _playerGameStartedTime = DateTime.Now;
-                    CurrentPlayerTimeLeft = 15;
+                    CurrentPlayerTimeLeft = TurnDuration;
                     GameState.LastPlayerId = PlayerState.Id;
+
+                    if (_missedTurns[PlayerState.Id] > 1)
+                    {
+                        // Missed moves limit reached
+                        RemovePlayer();
+                    }
+
                     _eventAggregator.Publish<Player>(null);
                 }
-                if (TimeLeft <= 1)
+                if (TimeLeft < 1)
                 {
                     StopGame();                    
                 }
@@ -102,7 +129,7 @@ namespace Web
             GameState.GameEnded = false; 
             _gameStartedTime = DateTime.Now;
             _playerGameStartedTime = DateTime.Now;
-            CurrentPlayerTimeLeft = 15; 
+            CurrentPlayerTimeLeft = TurnDuration; 
             _eventAggregator.Publish<Player>(null);
         }
 
